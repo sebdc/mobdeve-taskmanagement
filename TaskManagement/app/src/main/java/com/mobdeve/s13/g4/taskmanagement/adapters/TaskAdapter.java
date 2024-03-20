@@ -1,7 +1,7 @@
 package com.mobdeve.s13.g4.taskmanagement.adapters;
 
 import com.mobdeve.s13.g4.taskmanagement.R;
-import com.mobdeve.s13.g4.taskmanagement.activities.*;
+import com.mobdeve.s13.g4.taskmanagement.activities.ViewTaskActivity;
 import com.mobdeve.s13.g4.taskmanagement.models.*;
 import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
