@@ -1,6 +1,7 @@
 package com.mobdeve.s13.g4.taskmanagement.models;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /*******************************************************************
  *
@@ -10,6 +11,7 @@ import java.io.Serializable;
 public class Subtask implements Serializable {
 
     // - Class Attributes
+    private String id;
     private String description;
     private Boolean isCompleted;
 
@@ -19,6 +21,11 @@ public class Subtask implements Serializable {
     public Subtask( String description ) {
         this.description = description;
         this.isCompleted = false;
+        generateSubtaskId();
+    }
+
+    private void generateSubtaskId() {
+        this.id = UUID.randomUUID().toString();
     }
 
     /*|*******************************************************
@@ -27,6 +34,7 @@ public class Subtask implements Serializable {
         only serve the purpose of accessing and updating the
         state of Subtask objects.
     *********************************************************/
+    public String getId()           { return id; }
     public String getDescription()  { return description; }
     public boolean isCompleted()    { return isCompleted; }
 

@@ -98,14 +98,15 @@ public class Task implements Serializable {
         only serve the purpose of accessing and updating the 
         state of Task objects.
     *********************************************************/
-    public String getId()           { return id; }
-    public String getTitle()        { return title; }
-    public String getDescription()  { return description; }
-    public Category getCategory()   { return category; }
-    public Date getDueDate()        { return dueDate; }
-    public Date getDateCreated()    { return dateCreated; }
-    public boolean isCompleted()    { return isCompleted; }
-    public String getPriorityLevel() { return priorityLevel; }
+    public String getId()               { return id; }
+    public String getTitle()            { return title; }
+    public String getDescription()      { return description; }
+    public Category getCategory()       { return category; }
+    public Date getDueDate()            { return dueDate; }
+    public Date getDateCreated()        { return dateCreated; }
+    public boolean isCompleted()        { return isCompleted; }
+    public String getPriorityLevel()    { return priorityLevel; }
+    public List<Subtask> getSubtasks()  { return subtasks; }
 
     public void setTitle( String title )                { this.title = title; }
     public void setDescription( String description )    { this.description = description; }

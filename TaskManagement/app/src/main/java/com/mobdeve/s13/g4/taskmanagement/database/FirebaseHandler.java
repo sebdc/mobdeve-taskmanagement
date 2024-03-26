@@ -14,14 +14,14 @@ import com.mobdeve.s13.g4.taskmanagement.database.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FirebaseHelper {
+public class FirebaseHandler {
     private static final String USERS_NODE = "users";
     private static final String CATEGORIES_NODE = "categories";
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
-    public FirebaseHelper() {
+    public FirebaseHandler() {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
     }
