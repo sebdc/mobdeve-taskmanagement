@@ -35,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class CalendarFragment extends Fragment {
 
-    private UserData userData;
     private RecyclerView rvBubbleDates;
     private RecyclerView rvTaskList;
     private TaskAdapter taskAdapter;
@@ -43,26 +42,36 @@ public class CalendarFragment extends Fragment {
     private BubbleDateAdapter bubbleDateAdapter;
     private ImageButton btnCalendar;
 
-    public CalendarFragment() {}
-
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        // Initialize and set up the bubble date RecyclerView
+        // - Initialize and set up the bubble date RecyclerView
         rvBubbleDates = view.findViewById(R.id.rvBubbleDates);
+        setupBubbleDateRecyclerView();
+
+        // - Initialize and set up the task list RecyclerView
+        rvTaskList = view.findViewById(R.id.rvTaskList);
+        setupTaskListRecyclerView();
+
+        btnCalendar = view.findViewById(R.id.btnCalendar);
+        btnCalendar.setOnClickListener(v -> openCalendar());
+
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    private void setupBubbleDateRecyclerView() {
         rvBubbleDates.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         List<Calendar> dates = DateDataHelper.generateDates();
         bubbleDateAdapter = new BubbleDateAdapter(dates, date -> {
-            // Handle the selected date here
-            // Update your UI or perform any other actions
+            // - Handle the selected date here
+            // - Update your UI or perform any other actions
         });
         rvBubbleDates.setAdapter(bubbleDateAdapter);
+    }
 
-        // Initialize and set up the task list RecyclerView
-        rvTaskList = view.findViewById(R.id.rvTaskList);
+    private void setupTaskListRecyclerView() {
         rvTaskList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Create sample user and user data
@@ -76,12 +85,6 @@ public class CalendarFragment extends Fragment {
         // Create and set the task adapter
         taskAdapter = new TaskAdapter(taskList);
         rvTaskList.setAdapter(taskAdapter);
-
-        btnCalendar = view.findViewById(R.id.btnCalendar);
-        btnCalendar.setOnClickListener(v -> openCalendar());
-
-        // Inflate the layout for this fragment
-        return view;
     }
 
     private void openCalendar() {
