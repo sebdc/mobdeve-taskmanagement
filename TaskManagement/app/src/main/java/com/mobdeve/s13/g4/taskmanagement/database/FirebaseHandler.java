@@ -3,6 +3,14 @@ package com.mobdeve.s13.g4.taskmanagement.database;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.mobdeve.s13.g4.taskmanagement.R;
+import com.mobdeve.s13.g4.taskmanagement.adapters.*;
+import com.mobdeve.s13.g4.taskmanagement.fragments.CalendarFragment;
+import com.mobdeve.s13.g4.taskmanagement.fragments.HomeFragment;
+import com.mobdeve.s13.g4.taskmanagement.fragments.ProfileFragment;
+import com.mobdeve.s13.g4.taskmanagement.models.*;
+import com.mobdeve.s13.g4.taskmanagement.database.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
