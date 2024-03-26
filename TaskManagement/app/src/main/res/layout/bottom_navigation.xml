@@ -5,47 +5,56 @@
     android:layout_height="match_parent"
     android:id="@+id/bottomLayout"
     android:orientation="horizontal"
-    android:background="@color/white"
-    android:padding="8dp"
+    android:background="#FF0000"
     app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
             android:id="@+id/btnViewSidebar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
-            android:background="@null"
-            android:src="@drawable/ic_view_sidebar" />
+            android:padding="8dp"
+            android:background="#0359FF"
+            android:src="@drawable/ic_view_sidebar"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/btnViewHome"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
-            android:background="@null"
-            android:src="@drawable/ic_view_home" />
+            android:padding="8dp"
+            android:background="#0359FF"
+            android:src="@drawable/ic_view_home"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/btnAddTask"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
-            android:background="@null"
-            android:src="@drawable/ic_add_task" />
+            android:padding="8dp"
+            android:background="#0359FF"
+            android:src="@drawable/ic_add_task"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/btnViewCalendar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
-            android:background="@null"
-            android:src="@drawable/ic_calendar" />
+            android:padding="8dp"
+            android:background="#0359FF"
+            android:src="@drawable/ic_calendar"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/btnViewProfile"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
-            android:background="@null"
-            android:src="@drawable/ic_view_profile" />
+            android:padding="8dp"
+            android:background="#0359FF"
+            android:src="@drawable/ic_view_profile"
+            android:scaleType="fitCenter"/>
 </LinearLayout>

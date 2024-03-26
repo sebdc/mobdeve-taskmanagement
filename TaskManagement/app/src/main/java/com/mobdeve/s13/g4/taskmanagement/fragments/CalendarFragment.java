@@ -1,24 +1,98 @@
 package com.mobdeve.s13.g4.taskmanagement.fragments;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.mobdeve.s13.g4.taskmanagement.R;
+import com.mobdeve.s13.g4.taskmanagement.activities.BottomNavigationView;
+import com.mobdeve.s13.g4.taskmanagement.adapters.*;
+import com.mobdeve.s13.g4.taskmanagement.models.*;
+import com.mobdeve.s13.g4.taskmanagement.database.*;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.os.Bundle;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CalendarFragment extends Fragment {
 
-    public CalendarFragment() {
-        // Required empty public constructor
-    }
+    private UserData userData;
+    private RecyclerView rvBubbleDates;
+    private RecyclerView rvTaskList;
+    private TaskAdapter taskAdapter;
+    private List<Task> taskList;
+    private BubbleDateAdapter bubbleDateAdapter;
+    private ImageButton btnCalendar;
+
+    public CalendarFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+
+        // Initialize and set up the bubble date RecyclerView
+        rvBubbleDates = view.findViewById(R.id.rvBubbleDates);
+        rvBubbleDates.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        List<Calendar> dates = DateDataHelper.generateDates();
+        bubbleDateAdapter = new BubbleDateAdapter(dates, date -> {
+            // Handle the selected date here
+            // Update your UI or perform any other actions
+        });
+        rvBubbleDates.setAdapter(bubbleDateAdapter);
+
+        // Initialize and set up the task list RecyclerView
+        rvTaskList = view.findViewById(R.id.rvTaskList);
+        rvTaskList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Create sample user and user data
+        UserData userData = new UserData();
+        userData.initTempData();
+        userData.initTempData();
+
+        // Get the task list from user data
+        taskList = new ArrayList<>(userData.getTaskSet());
+
+        // Create and set the task adapter
+        taskAdapter = new TaskAdapter(taskList);
+        rvTaskList.setAdapter(taskAdapter);
+
+        btnCalendar = view.findViewById(R.id.btnCalendar);
+        btnCalendar.setOnClickListener(v -> openCalendar());
+
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    private void openCalendar() {
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Select a date");
+        MaterialDatePicker<Long> picker = builder.build();
+
+        picker.show(getParentFragmentManager(), "DatePicker");
+        picker.addOnPositiveButtonClickListener(selectedDate -> {
+            // Handle the selected date
+            // You can update your UI or perform any other actions here
+        });
     }
 }

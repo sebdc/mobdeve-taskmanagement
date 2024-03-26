@@ -1,0 +1,33 @@
+CREATE TABLE Users (
+    id TEXT PRIMARY KEY,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL
+);
+
+CREATE TABLE Categories (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    dateCreated TEXT NOT NULL,
+    ongoingTaskCount INTEGER NOT NULL,
+    completedTaskCount INTEGER NOT NULL
+);
+
+CREATE TABLE Tasks (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    categoryId TEXT NOT NULL,
+    dateCreated TEXT NOT NULL,
+    dueDate TEXT,
+    isCompleted INTEGER NOT NULL, -- 0 for false, 1 for true
+    priorityLevel TEXT,
+    FOREIGN KEY (categoryId) REFERENCES Categories(id)
+);
+
+CREATE TABLE Subtasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    taskId TEXT NOT NULL,
+    description TEXT NOT NULL,
+    isCompleted INTEGER NOT NULL, -- 0 for false, 1 for true
+    FOREIGN KEY (taskId) REFERENCES Tasks(id)
+);
