@@ -23,8 +23,10 @@
         <activity
             android:name=".activities.ViewTaskActivity"
             android:parentActivityName=".activities.MainActivity" />
+        <activity android:name=".activities.AddTaskActivity" />
+
         <activity android:name=".fragments.HomeFragment" />
-        <activity android:name=".fragments.CalendarFragment" />
-        <activity android:name=".fragments.ProfileFragment" />
+        <activity android:name=".fragments.TimelineFragment" />
+        <activity android:name=".fragments.TaskListFragment" />
     </application>
 </manifest>

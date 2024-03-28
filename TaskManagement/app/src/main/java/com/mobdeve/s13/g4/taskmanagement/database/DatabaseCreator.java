@@ -32,6 +32,7 @@ public class DatabaseCreator {
     private static final String TASK_DESCRIPTION = "description";
     private static final String TASK_DATE_CREATED = "dateCreated";
     private static final String TASK_DUE_DATE = "dueDate";
+    private static final String TASK_DUE_TIME = "dueTime";
     private static final String TASK_IS_COMPLETED = "isCompleted";
     private static final String TASK_PRIORITY_LEVEL = "priorityLevel";
 
@@ -91,6 +92,7 @@ public class DatabaseCreator {
                 + TASK_DESCRIPTION + " TEXT,"
                 + TASK_DATE_CREATED + " TEXT NOT NULL,"
                 + TASK_DUE_DATE + " TEXT,"
+                + TASK_DUE_TIME + " TEXT,"
                 + TASK_IS_COMPLETED + " INTEGER NOT NULL,"
                 + TASK_PRIORITY_LEVEL + " TEXT,"
                 + "FOREIGN KEY(" + TASK_USER_ID + ") REFERENCES " + USER_TABLE + "(" + USER_ID + ")"

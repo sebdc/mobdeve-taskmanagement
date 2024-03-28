@@ -1,23 +1,17 @@
 package com.mobdeve.s13.g4.taskmanagement.fragments;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.mobdeve.s13.g4.taskmanagement.R;
-import com.mobdeve.s13.g4.taskmanagement.activities.BottomNavigationView;
 import com.mobdeve.s13.g4.taskmanagement.adapters.*;
 import com.mobdeve.s13.g4.taskmanagement.models.*;
 import com.mobdeve.s13.g4.taskmanagement.database.*;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import android.view.LayoutInflater;
@@ -28,12 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-public class CalendarFragment extends Fragment {
+public class TimelineFragment extends Fragment {
 
     private RecyclerView rvBubbleDates;
     private RecyclerView rvTaskList;
@@ -44,7 +33,7 @@ public class CalendarFragment extends Fragment {
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_timeline, container, false);
 
         // - Initialize and set up the bubble date RecyclerView
         rvBubbleDates = view.findViewById(R.id.rvBubbleDates);

@@ -19,6 +19,7 @@ CREATE TABLE Tasks (
     categoryId TEXT NOT NULL,
     dateCreated TEXT NOT NULL,
     dueDate TEXT,
+    dueTime TEXT,
     isCompleted INTEGER NOT NULL, -- 0 for false, 1 for true
     priorityLevel TEXT,
     FOREIGN KEY (categoryId) REFERENCES Categories(id)

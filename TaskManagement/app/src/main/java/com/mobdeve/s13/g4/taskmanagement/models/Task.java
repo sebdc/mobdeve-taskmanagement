@@ -22,6 +22,7 @@ public class Task implements Serializable {
     private Category category;
     private Date dateCreated;
     private Date dueDate;
+    private Date dueTime;
     private boolean isCompleted;
     private List<Subtask> subtasks;
     private String priorityLevel;
@@ -35,20 +36,14 @@ public class Task implements Serializable {
         initTaskDetails();
     }
 
-    public Task( String title, String description ) {
+    public Task( String title, String description, Date dueDate ) {
         this.title = title;
         this.description = description;
+        this.dueDate = dueDate;
         generateTaskId();
         initTaskDetails();
     }
 
-    public Task( String title, String description, Category category ) {
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        generateTaskId();
-        initTaskDetails();
-    }
 
     public Task( String title, String description, Category category, Date dueDate ) {
         this.title = title;
@@ -102,8 +97,9 @@ public class Task implements Serializable {
     public String getTitle()            { return title; }
     public String getDescription()      { return description; }
     public Category getCategory()       { return category; }
-    public Date getDueDate()            { return dueDate; }
     public Date getDateCreated()        { return dateCreated; }
+    public Date getDueDate()            { return dueDate; }
+    public Date getDueTime()            { return dueTime; }
     public boolean isCompleted()        { return isCompleted; }
     public String getPriorityLevel()    { return priorityLevel; }
     public List<Subtask> getSubtasks()  { return subtasks; }
@@ -112,6 +108,7 @@ public class Task implements Serializable {
     public void setDescription( String description )    { this.description = description; }
     public void setCategory( Category category )        { this.category = category; }
     public void setDueDate( Date dueDate )              { this.dueDate = dueDate; }
+    public void setDueTime( Date dueTime )              { this.dueTime = dueTime; }
     public void setCompleted( boolean isCompleted )     { this.isCompleted = isCompleted; }
     public void setPriorityLevel(String priorityLevel ) { this.priorityLevel = priorityLevel; }
 

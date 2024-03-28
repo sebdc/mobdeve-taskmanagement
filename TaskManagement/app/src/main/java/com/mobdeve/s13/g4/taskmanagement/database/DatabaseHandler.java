@@ -12,7 +12,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private SQLiteDatabase database;
 
-
     /*|*******************************************************
                         Constructor Methods
     *********************************************************/
