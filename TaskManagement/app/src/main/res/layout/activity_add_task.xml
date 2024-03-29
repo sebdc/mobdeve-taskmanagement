@@ -98,152 +98,121 @@
             android:id="@+id/assignCategoryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
             <ImageView
+                android:id="@+id/ivAssignCategoryIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/tag_fill"
                 app:tint="@color/gray" />
 
             <TextView
-                android:id="@+id/assignCategoryTextView"
+                android:id="@+id/tvAssignCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Assign category"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/gray"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageButton
+                android:id="@+id/btnClearCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/close_line" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/assignDueDateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/ivAssignDueDateIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/tag_fill"
+                app:tint="@color/gray" />
+
+            <Button
+                android:id="@+id/tvAssignDueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Due Date"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginStart="8dp"/>
+
+            <Button
+                android:id="@+id/tvAssignDueTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Time"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginStart="8dp"/>
+
+            <ImageButton
+                android:id="@+id/btnClearDueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/close_line" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/assignPriorityLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/ivAssignLayoutIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/tag_fill"
+                app:tint="@color/gray" />
+
+            <TextView
+                android:id="@+id/tvAssignPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Assign Priority"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/gray"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageButton
+                android:id="@+id/btnClearPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/close_line" />
 
         </LinearLayout>
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/assignCategoryOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/assignCategoryModal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingBottom="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Assign Category"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCategoryList"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginTop="16dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
-
-                <Button
-                    android:id="@+id/btnViewCreateCategory"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Create Category" />
-
-                <Button
-                    android:id="@+id/btnAssignCategory"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Done"
-                    android:layout_marginStart="16dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/createCategoryOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/createCategoryModal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingBottom="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Create Category"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
-
-                <EditText
-                    android:id="@+id/categoryNameEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Category name" />
-
-                <ImageButton
-                    android:id="@+id/btnCreateCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/send_fill"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:layout_marginStart="16dp" />
-
-            </LinearLayout>
-
-            <GridLayout
-                android:id="@+id/colorSelectionLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="3"
-                android:rowCount="3"
-                android:layout_marginTop="16dp">
-
-            </GridLayout>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
