@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -45,7 +46,10 @@ public class AssignDateDialog extends DialogFragment {
     private TextView tvMonthYear;
     private ImageButton btnPrevMonth;
     private ImageButton btnNextMonth;
+
+    private GridView gvWeekdays;
     private GridView gvCalendar;
+
     private Button btnCancel;
     private Button btnSelect;
 
@@ -64,12 +68,13 @@ public class AssignDateDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog( @Nullable Bundle savedInstanceState ) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_assign_date, null);
 
         tvMonthYear = view.findViewById(R.id.tvMonthYear);
         btnPrevMonth = view.findViewById(R.id.btnPrevMonth);
         btnNextMonth = view.findViewById(R.id.btnNextMonth);
+        gvWeekdays = view.findViewById(R.id.gvWeekdays);
         gvCalendar = view.findViewById(R.id.gvCalendar);
         btnCancel = view.findViewById(R.id.btnCancel);
         btnSelect = view.findViewById(R.id.btnSelect);
@@ -110,6 +115,11 @@ public class AssignDateDialog extends DialogFragment {
             }
         });
 
+        String[] weekdays = new String[]{"M", "T", "W", "T", "F", "S", "S"};
+        ArrayAdapter<String> weekdayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, weekdays);
+        gvWeekdays.setAdapter(weekdayAdapter);
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
         return builder.create();
@@ -117,7 +127,7 @@ public class AssignDateDialog extends DialogFragment {
 
     private void updateCalendar() {
         tvMonthYear.setText(new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentDate.getTime()));
-        calendarAdapter = new AssignDateAdapter(getActivity(), currentDate);
+        calendarAdapter = new AssignDateAdapter(getActivity(), currentDate, tvMonthYear);
         gvCalendar.setAdapter(calendarAdapter);
     }
 
