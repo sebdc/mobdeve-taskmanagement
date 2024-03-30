@@ -20,7 +20,6 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryVi
     private List<Category> categories;
     private OnCategoryClickListener listener;
 
-
     /*|*******************************************************
                       Constructor Methods
     *********************************************************/

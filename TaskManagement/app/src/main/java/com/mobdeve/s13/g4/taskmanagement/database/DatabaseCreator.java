@@ -14,7 +14,6 @@ public class DatabaseCreator {
 
     // - Category Table 
     private static final String CATEGORY_TABLE = "categories";
-    private static final String CATEGORY_ID = "id";
     private static final String CATEGORY_NAME = "name";
     private static final String CATEGORY_DATE_CREATED = "dateCreated";
     private static final String CATEGORY_ONGOING_TASK_COUNT = "ongoingTaskCount";
@@ -25,7 +24,7 @@ public class DatabaseCreator {
     // - Task Table
     private static final String TASK_TABLE = "tasks";
     private static final String TASK_ID = "id";
-    private static final String TASK_CATEGORY_ID = "categoryId";
+    private static final String TASK_CATEGORY_NAME = "categoryName";
     private static final String TASK_TITLE = "title";
     private static final String TASK_DESCRIPTION = "description";
     private static final String TASK_DATE_CREATED = "dateCreated";
@@ -71,8 +70,7 @@ public class DatabaseCreator {
     private void createCategoryTable( SQLiteDatabase database ) {
         String CREATE_CATEGORY_TABLE =
             "CREATE TABLE " + CATEGORY_TABLE + "("
-                + CATEGORY_ID + " TEXT PRIMARY KEY,"
-                + CATEGORY_NAME + " TEXT NOT NULL,"
+                + CATEGORY_NAME + " TEXT PRIMARY KEY,"
                 + CATEGORY_DATE_CREATED + " TEXT NOT NULL,"
                 + CATEGORY_ONGOING_TASK_COUNT + " INTEGER NOT NULL,"
                 + CATEGORY_COMPLETED_TASK_COUNT + " INTEGER NOT NULL,"
@@ -86,7 +84,7 @@ public class DatabaseCreator {
         String CREATE_TASK_TABLE =
             "CREATE TABLE " + TASK_TABLE + "("
                 + TASK_ID + " TEXT PRIMARY KEY,"
-                + TASK_CATEGORY_ID + " TEXT,"
+                + TASK_CATEGORY_NAME + " TEXT,"
                 + TASK_TITLE + " TEXT NOT NULL,"
                 + TASK_DESCRIPTION + " TEXT,"
                 + TASK_DATE_CREATED + " TEXT NOT NULL,"
@@ -94,7 +92,7 @@ public class DatabaseCreator {
                 + TASK_DUE_TIME + " TEXT,"
                 + TASK_IS_COMPLETED + " INTEGER NOT NULL,"
                 + TASK_PRIORITY_LEVEL + " TEXT,"
-                + "FOREIGN KEY(" + TASK_CATEGORY_ID + ") REFERENCES " + CATEGORY_TABLE + "(" + CATEGORY_ID + ")"
+                + "FOREIGN KEY(" + TASK_CATEGORY_NAME + ") REFERENCES " + CATEGORY_TABLE + "(" + CATEGORY_NAME + ")"
                 + ")";
         database.execSQL(CREATE_TASK_TABLE);
     }

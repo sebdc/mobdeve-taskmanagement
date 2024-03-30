@@ -49,7 +49,7 @@ public class FirebaseHandler {
                     Category Functionalities 
     *********************************************************/
     public void addCategoryToFirebase( Category category ) {
-        DatabaseReference categoryRef = databaseReference.child(CATEGORIES_NODE).child(category.getId());
+        DatabaseReference categoryRef = databaseReference.child(CATEGORIES_NODE).child(category.getName());
         categoryRef.child("name").setValue(category.getName());
         categoryRef.child("dateCreated").setValue(category.getDateCreated().getTime()); // Store date as long
         categoryRef.child("ongoingTaskCount").setValue(category.getOngoingTaskCount());
@@ -57,7 +57,7 @@ public class FirebaseHandler {
     }
 
     public void editCategoryInFirebase( Category updatedCategory ) {
-        DatabaseReference categoryRef = databaseReference.child(CATEGORIES_NODE).child(updatedCategory.getId());
+        DatabaseReference categoryRef = databaseReference.child(CATEGORIES_NODE).child(updatedCategory.getName());
 
         Map<String, Object> updatedCategoryData = new HashMap<>();
         updatedCategoryData.put("name", updatedCategory.getName());
@@ -67,8 +67,8 @@ public class FirebaseHandler {
         categoryRef.updateChildren(updatedCategoryData);
     }
 
-    public void deleteCategoryFromFirebase( String categoryId ) {
-        DatabaseReference categoryRef = databaseReference.child(CATEGORIES_NODE).child(categoryId);
+    public void deleteCategoryFromFirebase( String categoryName ) {
+        DatabaseReference categoryRef = databaseReference.child(CATEGORIES_NODE).child(categoryName);
         categoryRef.removeValue();
     }
 
@@ -84,7 +84,7 @@ public class FirebaseHandler {
         taskData.put("id", task.getId());
         taskData.put("title", task.getTitle());
         taskData.put("description", task.getDescription());
-        taskData.put("categoryId", task.getCategory().getId());
+        taskData.put("categoryName", task.getCategory().getName());
         taskData.put("dateCreated", task.getDateCreated()); // Store date as long
         taskData.put("dueDate", task.getDueDate() != null ? task.getDueDate() : null); // Store date as long or null
         taskData.put("isCompleted", task.isCompleted());
@@ -108,7 +108,7 @@ public class FirebaseHandler {
         Map<String, Object> updatedTaskData = new HashMap<>();
         updatedTaskData.put("title", updatedTask.getTitle());
         updatedTaskData.put("description", updatedTask.getDescription());
-        updatedTaskData.put("categoryId", updatedTask.getCategory().getId());
+        updatedTaskData.put("categoryName", updatedTask.getCategory().getName());
         updatedTaskData.put("dueDate", updatedTask.getDueDate() != null ? updatedTask.getDueDate() : null);
         updatedTaskData.put("isCompleted", updatedTask.isCompleted());
         updatedTaskData.put("priorityLevel", updatedTask.getPriorityLevel());

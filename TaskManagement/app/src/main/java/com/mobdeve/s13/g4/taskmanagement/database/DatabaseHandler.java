@@ -49,7 +49,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     *********************************************************/
     // - Category Table
     private static final String CATEGORY_TABLE = "categories";
-    private static final String CATEGORY_ID = "id";
     private static final String CATEGORY_NAME = "name";
     private static final String CATEGORY_DATE_CREATED = "dateCreated";
     private static final String CATEGORY_ONGOING_TASK_COUNT = "ongoingTaskCount";
@@ -60,7 +59,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void insertCategory( Category category ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(CATEGORY_ID, category.getId());
         values.put(CATEGORY_NAME, category.getName());
         values.put(CATEGORY_DATE_CREATED, category.getDateCreated().getTime());
         values.put(CATEGORY_ONGOING_TASK_COUNT, category.getOngoingTaskCount());
@@ -79,7 +77,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if( cursor.moveToFirst() ) {
             int categoryNameIndex = cursor.getColumnIndex(CATEGORY_NAME);
-            int categoryIdIndex = cursor.getColumnIndex(CATEGORY_ID);
             int categoryDateCreatedIndex = cursor.getColumnIndex(CATEGORY_DATE_CREATED);
             int categoryOngoingTaskCountIndex = cursor.getColumnIndex(CATEGORY_ONGOING_TASK_COUNT);
             int categoryCompletedTaskCountIndex = cursor.getColumnIndex(CATEGORY_COMPLETED_TASK_COUNT);
@@ -88,7 +85,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             do {
                 Category category = new Category( cursor.getString(categoryNameIndex) );
-                category.setId( cursor.getString(categoryIdIndex) );
                 category.setDateCreated( new Date(cursor.getLong(categoryDateCreatedIndex)) );
                 category.setOngoingTaskCount( cursor.getInt(categoryOngoingTaskCountIndex) );
                 category.setCompletedTaskCount( cursor.getInt(categoryCompletedTaskCountIndex) );
@@ -103,18 +99,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return categoryList;
     }
 
-    public Category getCategoryById( String categoryId ) {
-        if( categoryId == null || categoryId.isEmpty() ) {
+    public Category getCategoryByName( String categoryName ) {
+        if( categoryName == null || categoryName.isEmpty() ) {
             return null;
         }
 
-        String selectQuery = "SELECT * FROM " + CATEGORY_TABLE + " WHERE " + CATEGORY_ID + " = ?";
+        String selectQuery = "SELECT * FROM " + CATEGORY_TABLE + " WHERE " + CATEGORY_NAME + " = ?";
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{categoryId});
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{categoryName});
 
         if( cursor.moveToFirst() ) {
             int categoryNameIndex = cursor.getColumnIndex(CATEGORY_NAME);
-            int categoryIdIndex = cursor.getColumnIndex(CATEGORY_ID);
             int categoryDateCreatedIndex = cursor.getColumnIndex(CATEGORY_DATE_CREATED);
             int categoryOngoingTaskCountIndex = cursor.getColumnIndex(CATEGORY_ONGOING_TASK_COUNT);
             int categoryCompletedTaskCountIndex = cursor.getColumnIndex(CATEGORY_COMPLETED_TASK_COUNT);
@@ -122,7 +117,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             int categorySubColorIndex = cursor.getColumnIndex(CATEGORY_SUB_COLOR);
 
             Category category = new Category(cursor.getString(categoryNameIndex));
-            category.setId(cursor.getString(categoryIdIndex));
             category.setDateCreated(new Date(cursor.getLong(categoryDateCreatedIndex)));
             category.setOngoingTaskCount(cursor.getInt(categoryOngoingTaskCountIndex));
             category.setCompletedTaskCount(cursor.getInt(categoryCompletedTaskCountIndex));
@@ -145,7 +139,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TASK_TABLE = "tasks";
     private static final String TASK_ID = "id";
     private static final String TASK_USER_ID = "userId";
-    private static final String TASK_CATEGORY_ID = "categoryId";
+    private static final String TASK_CATEGORY_NAME = "categoryName";
     private static final String TASK_TITLE = "title";
     private static final String TASK_DESCRIPTION = "description";
     private static final String TASK_DATE_CREATED = "dateCreated";
@@ -168,8 +162,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(TASK_DATE_CREATED, task.getDateCreated());
         }
 
-        if( task.getCategory() != null && task.getCategory().getId() != null ) {
-            values.put(TASK_CATEGORY_ID, task.getCategory().getId());
+        if( task.getCategory() != null && task.getCategory().getName() != null ) {
+            values.put(TASK_CATEGORY_NAME, task.getCategory().getName());
         }
 
         if( task.getPriorityLevel() != null ) {
@@ -190,6 +184,72 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateTask( Task task ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TASK_TITLE, task.getTitle());
+
+        if( task.getDescription() != null ) {
+            values.put(TASK_DESCRIPTION, task.getDescription());
+        } else {
+            values.putNull(TASK_DESCRIPTION);
+        }
+
+        if( task.getDateCreated() != null ) {
+            values.put(TASK_DATE_CREATED, task.getDateCreated());
+        } else {
+            values.putNull(TASK_DATE_CREATED);
+        }
+
+        if (task.getCategory() != null && task.getCategory().getName() != null) {
+            values.put(TASK_CATEGORY_NAME, task.getCategory().getName());
+        } else {
+            values.putNull(TASK_CATEGORY_NAME);
+        }
+
+        if (task.getPriorityLevel() != null) {
+            values.put(TASK_PRIORITY_LEVEL, task.getPriorityLevel());
+        } else {
+            values.putNull(TASK_PRIORITY_LEVEL);
+        }
+
+        if (task.getDueDate() != null) {
+            values.put(TASK_DUE_DATE, task.getDueDate());
+        } else {
+            values.putNull(TASK_DUE_DATE);
+        }
+
+        if (task.getDueTime() != null) {
+            values.put(TASK_DUE_TIME, task.getDueTime());
+        } else {
+            values.putNull(TASK_DUE_TIME);
+        }
+
+        values.put(TASK_IS_COMPLETED, task.isCompleted() ? 1 : 0);
+
+        String whereClause = TASK_ID + " = ?";
+        String[] whereArgs = {task.getId()};
+
+        int rowsAffected = db.update(TASK_TABLE, values, whereClause, whereArgs);
+        db.close();
+
+        if( rowsAffected > 0 ) {
+
+            // Task updated successfully
+        } else {
+            // Task not found or update failed
+        }
+    }
+
+    public void deleteTask( Task task ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = TASK_ID + " = ?";
+        String[] whereArgs = {task.getId()};
+
+        db.delete(TASK_TABLE, whereClause, whereArgs);
+        db.close();
+    }
+
     public List<Task> getAllTasks() {
         List<Task> taskList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TASK_TABLE;
@@ -201,7 +261,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             int taskDescriptionIndex = cursor.getColumnIndex(TASK_DESCRIPTION);
             int taskDateCreatedIndex = cursor.getColumnIndex(TASK_DATE_CREATED);
             int taskIdIndex = cursor.getColumnIndex(TASK_ID);
-            int taskCategoryIdIndex = cursor.getColumnIndex(TASK_CATEGORY_ID);
+            int taskCategoryNameIndex = cursor.getColumnIndex(TASK_CATEGORY_NAME);
             int taskPriorityLevelIndex = cursor.getColumnIndex(TASK_PRIORITY_LEVEL);
             int taskDueDateIndex = cursor.getColumnIndex(TASK_DUE_DATE);
             int taskDueTimeIndex = cursor.getColumnIndex(TASK_DUE_TIME);
@@ -214,13 +274,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 String taskDateCreated = cursor.getString(taskDateCreatedIndex);
                 String taskDueDate = cursor.getString(taskDueDateIndex);
                 String taskDueTime = cursor.getString(taskDueTimeIndex);
-                String taskCategoryId = cursor.getString(taskCategoryIdIndex);
+                String taskCategoryName = cursor.getString(taskCategoryNameIndex);
                 String taskPriorityLevel = cursor.getString(taskPriorityLevelIndex);
                 boolean taskIsCompleted = cursor.getInt(taskIsCompletedIndex) == 1;
 
                 Task task = new Task(taskTitle, taskId);
                 task.setDescription(taskDescription);
-                task.setCategory(getCategoryById(taskCategoryId));
+                task.setCategory(getCategoryByName(taskCategoryName));
                 task.setPriorityLevel(taskPriorityLevel);
                 task.setDateCreated(taskDateCreated);
                 task.setDueDate(taskDueDate);

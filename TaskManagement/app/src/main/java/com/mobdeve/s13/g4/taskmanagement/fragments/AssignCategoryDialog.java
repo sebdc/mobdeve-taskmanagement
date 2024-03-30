@@ -49,19 +49,18 @@ public class AssignCategoryDialog extends BottomSheetDialogFragment {
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
         view = inflater.inflate(R.layout.dialog_assign_category, container, false);
-        categoryList = new ArrayList<>();
+        List<Category> tempCategoryList;
 
         // - Database setup
         DatabaseHandler dbHandler = new DatabaseHandler(getContext());
-        categoryList = dbHandler.getAllCategories();
+        tempCategoryList = dbHandler.getAllCategories();
+        sortCategoriesByDateCreated(tempCategoryList);
 
-        // - Sort categories by dateCreated
-        Collections.sort( categoryList, new Comparator<Category>() {
-            @Override
-            public int compare(Category c1, Category c2) {
-                return c1.getDateCreated().compareTo(c2.getDateCreated());
-            }
-        });
+        // - Create a pseudo "none" category
+        Category noneCategory = new Category("None");
+        categoryList = new ArrayList<>();
+        categoryList.add(noneCategory);
+        categoryList.addAll(tempCategoryList);
 
         // - Dialog view and functionality setup
         findAllViews();
@@ -171,5 +170,17 @@ public class AssignCategoryDialog extends BottomSheetDialogFragment {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
+    }
+
+    /*|*******************************************************
+                        Dialogue Methods
+    *********************************************************/
+    private void sortCategoriesByDateCreated( List<Category> categoryList ) {
+        Collections.sort( categoryList, new Comparator<Category>() {
+            @Override
+            public int compare(Category c1, Category c2) {
+                return c1.getDateCreated().compareTo(c2.getDateCreated());
+            }
+        });
     }
 }

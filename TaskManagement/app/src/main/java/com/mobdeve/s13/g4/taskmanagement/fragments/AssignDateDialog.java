@@ -104,7 +104,6 @@ public class AssignDateDialog extends DialogFragment {
         ArrayAdapter<String> weekdayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, weekdays);
         gvWeekdays.setAdapter(weekdayAdapter);
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
         return builder.create();

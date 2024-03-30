@@ -12,8 +12,7 @@ import java.util.UUID;
 public class Category implements Serializable {
 
     // - Class Attributes
-    private String id;
-    private String name;
+    private String name;                // - Primary key
     private Date dateCreated;
     private String mainColor;           // - Hex code
     private String subColor;            // - Hex code
@@ -24,17 +23,12 @@ public class Category implements Serializable {
                         Constructor Methods
     *********************************************************/
     public Category( String name ) {
-        generateCategoryId();
         this.name = name;
         this.dateCreated = new Date();
         this.ongoingTaskCount = 0;
         this.completedTaskCount = 0;
         this.mainColor = "";
         this.subColor = "";
-    }
-
-    private void generateCategoryId() {
-        this.id = UUID.randomUUID().toString();
     }
 
     /*|*******************************************************
@@ -53,7 +47,6 @@ public class Category implements Serializable {
         only serve the purpose of accessing and updating the 
         state of UserData objects.
     *********************************************************/
-    public String getId()               { return id; }
     public String getName()             { return name; }
     public Date getDateCreated()        { return dateCreated; }
     public int getOngoingTaskCount()    { return ongoingTaskCount; }
@@ -61,7 +54,6 @@ public class Category implements Serializable {
     public String getMainColor()        { return mainColor; }
     public String getSubColor()         { return subColor; }
 
-    public void setId( String id )                  { this.id = id; }
     public void setName( String name )              { this.name = name; }
     public void setDateCreated( Date dateCreated )  { this.dateCreated = dateCreated; }
     public void setOngoingTaskCount( int count )    { this.ongoingTaskCount = count; }

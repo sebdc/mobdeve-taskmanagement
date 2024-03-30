@@ -47,7 +47,9 @@
         android:id="@+id/rvTaskList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/topLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/topLayout"
+        android:paddingBottom="90dp"
+        android:clipToPadding="false"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddTask"

@@ -18,7 +18,6 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private RecyclerView rvTaskList;
-    private TaskAdapter taskAdapter;
     private List<Task> taskList;
 
     public HomeFragment() {

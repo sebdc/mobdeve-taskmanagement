@@ -8,12 +8,17 @@ import com.mobdeve.s13.g4.taskmanagement.activities.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +28,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
+
 
 public class TaskListFragment extends Fragment {
 
@@ -36,6 +39,7 @@ public class TaskListFragment extends Fragment {
     private ImageButton btnAddTask;
 
     private ActivityResultLauncher<Intent> addTaskLauncher;
+    private ActivityResultLauncher<Intent> updateTaskLauncher;
 
     /*|*******************************************************
                          Constructor Methods
@@ -82,6 +86,13 @@ public class TaskListFragment extends Fragment {
                         refreshTaskList();
                     }
                 });
+
+        updateTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if( result.getResultCode() == Activity.RESULT_OK ) {
+                        refreshTaskList();
+                    }
+                });
     }
 
     public void refreshTaskList() {
@@ -90,7 +101,6 @@ public class TaskListFragment extends Fragment {
         taskList.addAll(dbHandler.getAllTasks());
         taskAdapter.notifyDataSetChanged();
     }
-
 
     /*|*******************************************************
                            Task Adapter
@@ -105,7 +115,7 @@ public class TaskListFragment extends Fragment {
         @NonNull
         @Override
         public TaskListViewHolder onCreateViewHolder( @NonNull ViewGroup parent, int viewType ) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bubble_tasks, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tasklist_tasks, parent, false);
             return new TaskListViewHolder(view);
         }
 
@@ -113,6 +123,12 @@ public class TaskListFragment extends Fragment {
         public void onBindViewHolder( @NonNull TaskListViewHolder holder, int position ) {
             Task task = tasks.get(position);
             holder.bind(task);
+
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), ViewTaskActivity.class);
+                intent.putExtra("task", task);
+                updateTaskLauncher.launch(intent);
+            });
         }
 
         @Override
@@ -126,47 +142,82 @@ public class TaskListFragment extends Fragment {
                       Task List View Holder
     *********************************************************/
     private class TaskListViewHolder extends RecyclerView.ViewHolder {
-        private ImageView flagImageView;
+        private ImageView ivFlagIcon;
         private TextView titleTextView;
-        private TextView categoryTextView;
+        private TextView tvCategoryTag;
         private TextView deadlineTextView;
         private TextView descriptionTextView;
 
-        public TaskListViewHolder( @NonNull View itemView ) {
+        public TaskListViewHolder(@NonNull View itemView) {
             super(itemView);
-            flagImageView = itemView.findViewById(R.id.flagImageView);
+            ivFlagIcon = itemView.findViewById(R.id.ivFlagIcon);
             titleTextView = itemView.findViewById(R.id.titleTextView);
-            categoryTextView = itemView.findViewById(R.id.categoryTextView);
+            tvCategoryTag = itemView.findViewById(R.id.tvCategoryTag);
             deadlineTextView = itemView.findViewById(R.id.deadlineTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
         }
 
-        public void bind( Task task ) {
+        public void bind(Task task) {
             titleTextView.setText(task.getTitle());
 
-            if( task.getCategory() != null ) {
-                categoryTextView.setText(task.getCategory().toString());
-                categoryTextView.setVisibility(View.VISIBLE);
+            if (task.getCategory() != null) {
+                tvCategoryTag.setText(task.getCategory().getName());
+                tvCategoryTag.setVisibility(View.VISIBLE);
+
+                int categoryColor = Color.parseColor("#D8981E");
+                tvCategoryTag.setTextColor(categoryColor);
+
+                // - 10% opacity
+                int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(categoryColor, (int) (255 * 0.1));
+                tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
+
             } else {
-                categoryTextView.setVisibility(View.GONE);
+                tvCategoryTag.setVisibility(View.GONE);
             }
 
-            if( task.getDueDate() != null ) {
-                deadlineTextView.setText("Task Deadline: " + task.getDueDate());
+            if (task.getDueDate() != null) {
+                deadlineTextView.setText("Deadline: " + task.getDueDate());
                 deadlineTextView.setVisibility(View.VISIBLE);
             } else {
                 deadlineTextView.setVisibility(View.GONE);
             }
 
-            if( task.getDescription() != null ) {
+            if (task.getDescription() != null) {
                 descriptionTextView.setText(task.getDescription());
                 descriptionTextView.setVisibility(View.VISIBLE);
             } else {
                 descriptionTextView.setVisibility(View.GONE);
             }
 
-            flagImageView.setVisibility(View.GONE);
+            if (task.getPriorityLevel() != null) {
+                String priorityLevel = task.getPriorityLevel();
+                handleFlagIconColor(priorityLevel);
+            } else {
+                ivFlagIcon.setVisibility(View.GONE);
+            }
+        }
+
+        private void handleFlagIconColor(String priorityLevel) {
+            switch (priorityLevel) {
+                case "High": {
+                    ivFlagIcon.setVisibility(View.VISIBLE);
+                    ivFlagIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.high), PorterDuff.Mode.SRC_IN);
+                };
+                break;
+                case "Medium": {
+                    ivFlagIcon.setVisibility(View.VISIBLE);
+                    ivFlagIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.medium), PorterDuff.Mode.SRC_IN);
+                };
+                break;
+                case "Low": {
+                    ivFlagIcon.setVisibility(View.VISIBLE);
+                    ivFlagIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.low), PorterDuff.Mode.SRC_IN);
+                };
+                break;
+                default: {
+                    ivFlagIcon.setVisibility(View.GONE);
+                };
+            }
         }
     }
-
 }

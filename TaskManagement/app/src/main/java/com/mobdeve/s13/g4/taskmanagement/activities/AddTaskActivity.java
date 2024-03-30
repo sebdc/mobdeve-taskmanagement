@@ -46,6 +46,7 @@ public class AddTaskActivity extends AppCompatActivity {
     // - Task Header
     private EditText etTaskTitle;
     private EditText etTaskDescription;
+    private ImageButton btnBack;
 
     // - Task Details
     private TextView tvAssignCategory;
@@ -53,8 +54,8 @@ public class AddTaskActivity extends AppCompatActivity {
     private ImageButton btnClearPriority;
 
     // - Task Due Date
-    private Button tvAssignDueDate;
-    private Button tvAssignDueTime;
+    private Button btnAssignDueDate;
+    private Button btnAssignDueTime;
 
     // - Create Task
     private Button btnCreateTask;
@@ -71,20 +72,30 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     /*|*******************************************************
-                   Initialize Methods
+                      Initialize Methods
     *********************************************************/
     private void findAllViews() {
         etTaskTitle = findViewById(R.id.etTaskTitle);
         etTaskDescription = findViewById(R.id.etTaskDescription);
+        btnBack = findViewById(R.id.btnBack);
+
         tvAssignCategory = findViewById(R.id.tvAssignCategory);
         tvAssignPriority = findViewById(R.id.tvAssignPriority);
         btnClearPriority = findViewById(R.id.btnClearPriority);
-        tvAssignDueDate = findViewById(R.id.tvAssignDueDate);
-        tvAssignDueTime = findViewById(R.id.tvAssignDueTime);
+
+        btnAssignDueDate = findViewById(R.id.btnAssignDueDate);
+        btnAssignDueTime = findViewById(R.id.btnAssignDueTime);
         btnCreateTask = findViewById(R.id.btnCreateTask);
     }
 
     private void setupButtonsFunctionality() {
+        btnBack.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+                onBackPressed();
+            }
+        });
+
         tvAssignCategory.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
@@ -106,14 +117,14 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
 
-        tvAssignDueDate.setOnClickListener(new View.OnClickListener() {
+        btnAssignDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openAssignDateDialog();
             }
         });
 
-        tvAssignDueTime.setOnClickListener(new View.OnClickListener() {
+        btnAssignDueTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openTimePicker();
@@ -136,6 +147,8 @@ public class AddTaskActivity extends AppCompatActivity {
         String description = etTaskDescription.getText().toString().trim();
         String categoryName = tvAssignCategory.getText().toString().trim();
         String priorityLevel = tvAssignPriority.getText().toString().trim();
+        String dueDate = btnAssignDueDate.getText().toString().trim();
+        String dueTime = btnAssignDueTime.getText().toString().trim();
 
         if( title.isEmpty() ) {
             Toast.makeText(this, "Please enter a task title", Toast.LENGTH_SHORT).show();
@@ -144,23 +157,30 @@ public class AddTaskActivity extends AppCompatActivity {
 
         // - Create new task if we have a title
         Task task = new Task(title);
+        DatabaseHandler dbHandler = new DatabaseHandler(this);
 
         // - Add optional details
         if( !description.isEmpty() ) { task.setDescription( description ); }
         if( !priorityLevel.isEmpty() ) { task.setPriorityLevel( priorityLevel ); }
 
-        // - Due date
-        // - Due time
-
         if( !categoryName.isEmpty() ) {
-            /*
-                - In category dialog, when a category is selected, we somehow need its ID
-                - When we get the ID, we perform dbHandler.getCategoryById();
-                - We use it for task category
-            */
+            Category category = dbHandler.getCategoryByName(categoryName);
+            task.setCategory( category );
         }
 
-        DatabaseHandler dbHandler = new DatabaseHandler(this);
+        if( !priorityLevel.isEmpty() ) {
+            task.setPriorityLevel(priorityLevel);
+        }
+
+        if( !dueDate.isEmpty() && !dueDate.equals("Due Date") ) {
+            task.setDueDate( dueDate );
+        }
+
+        if( !dueTime.isEmpty() ) {
+            task.setDueTime(dueTime);
+        }
+
+
         dbHandler.insertTask(task);
         Toast.makeText(this, "Task inserted!", Toast.LENGTH_SHORT).show();
 
@@ -177,7 +197,12 @@ public class AddTaskActivity extends AppCompatActivity {
         dialog.setOnCategorySelectedListener( new AssignCategoryDialog.OnCategorySelectedListener() {
             @Override
             public void onCategorySelected( Category category ) {
-                tvAssignCategory.setText( category.getName() );
+                String categoryName = category.getName();
+                if( categoryName.equals("None") ) {
+                    tvAssignCategory.setText( "Assign category" );
+                } else {
+                    tvAssignCategory.setText( category.getName() );
+                }
             }
         });
         dialog.show( getSupportFragmentManager(), "AssignCategoryDialog" );
@@ -195,7 +220,9 @@ public class AddTaskActivity extends AppCompatActivity {
             public void onDateSelected( Calendar selectedDate ) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
                 String formattedDate = dateFormat.format(selectedDate.getTime());
-                tvAssignDueDate.setText(formattedDate);
+
+                // - Set the new text
+                btnAssignDueDate.setText(formattedDate);
             }
         });
         dialog.show(getSupportFragmentManager(), "AssignDateDialog");
@@ -213,7 +240,9 @@ public class AddTaskActivity extends AppCompatActivity {
                         String amPm = (hourOfDay < 12) ? "AM" : "PM";
                         int hour = (hourOfDay == 0) ? 12 : ((hourOfDay > 12) ? hourOfDay - 12 : hourOfDay);
                         String formattedTime = String.format("%02d:%02d %s", hour, minute, amPm);
-                        tvAssignDueTime.setText(formattedTime);
+
+                        btnAssignDueTime.setText(formattedTime);
+
                     }
                 }, hour, minute, false);
 
@@ -227,11 +256,14 @@ public class AddTaskActivity extends AppCompatActivity {
         AssignPriorityDialog dialog = AssignPriorityDialog.newInstance();
         dialog.setOnPrioritySelectedListener(new AssignPriorityDialog.OnPrioritySelectedListener() {
             @Override
-            public void onPrioritySelected(String priority) {
-                tvAssignPriority.setText(priority);
+            public void onPrioritySelected( String priority ) {
+                if( priority.equals("None") ) {
+                    tvAssignCategory.setText( "Assign priority" );
+                } else {
+                    tvAssignPriority.setText(priority);
+                }
             }
         });
         dialog.show(getSupportFragmentManager(), "AssignPriorityDialog");
     }
-
 }

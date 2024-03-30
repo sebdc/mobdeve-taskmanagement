@@ -41,9 +41,10 @@ public class AssignPriorityDialog extends BottomSheetDialogFragment {
         Button btnDone = view.findViewById(R.id.btnDone);
 
         priorityList = new ArrayList<>();
-        priorityList.add("Low");
-        priorityList.add("Medium");
         priorityList.add("High");
+        priorityList.add("Medium");
+        priorityList.add("Low");
+        priorityList.add("None");
 
         priorityAdapter = new PriorityAdapter(priorityList, new PriorityAdapter.OnPriorityClickListener() {
             @Override
