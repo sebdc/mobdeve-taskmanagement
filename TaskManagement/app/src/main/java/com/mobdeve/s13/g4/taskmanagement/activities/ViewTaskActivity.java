@@ -198,14 +198,6 @@ public class ViewTaskActivity extends AppCompatActivity {
         String dueDate = btnAssignDueDate.getText().toString().trim();
         String dueTime = btnAssignDueTime.getText().toString().trim();
 
-        selectedTask.setDueDate(dueDate);
-        Toast.makeText(this, selectedTask.getDueDate(), Toast.LENGTH_SHORT).show();
-
-        if( title.isEmpty() ) {
-            Toast.makeText(this, "Please enter a task title", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         DatabaseHandler dbHandler = new DatabaseHandler(this);
         selectedTask.setTitle(title);
 
