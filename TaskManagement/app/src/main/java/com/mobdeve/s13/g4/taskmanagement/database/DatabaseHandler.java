@@ -147,6 +147,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TASK_DUE_TIME = "dueTime";
     private static final String TASK_IS_COMPLETED = "isCompleted";
     private static final String TASK_PRIORITY_LEVEL = "priorityLevel";
+    private static final String DUE_DATE_DEFAULT = "Due date";
+    private static final String DUE_TIME_DEFAULT = "Add time";
 
     public void insertTask( Task task ) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -189,7 +191,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(TASK_TITLE, task.getTitle());
 
-        if( task.getDescription() != null ) {
+        if( task.getDescription() != null && !task.getDescription().isEmpty() ) {
             values.put(TASK_DESCRIPTION, task.getDescription());
         } else {
             values.putNull(TASK_DESCRIPTION);
@@ -201,26 +203,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.putNull(TASK_DATE_CREATED);
         }
 
-        if (task.getCategory() != null && task.getCategory().getName() != null) {
+        if( task.getCategory() != null && task.getCategory().getName() != null ) {
             values.put(TASK_CATEGORY_NAME, task.getCategory().getName());
         } else {
             values.putNull(TASK_CATEGORY_NAME);
         }
 
-        if (task.getPriorityLevel() != null) {
+        if( task.getPriorityLevel() != null ) {
             values.put(TASK_PRIORITY_LEVEL, task.getPriorityLevel());
         } else {
             values.putNull(TASK_PRIORITY_LEVEL);
         }
 
-        if (task.getDueDate() != null) {
+        if( task.getDueDate() != null && !task.getDueDate().equals(DUE_DATE_DEFAULT) ) {
             values.put(TASK_DUE_DATE, task.getDueDate());
+        } else if( task.getDueDate() != null && task.getDueDate().equals(DUE_DATE_DEFAULT) ) {
+            values.putNull(TASK_DUE_DATE);
         } else {
             values.putNull(TASK_DUE_DATE);
         }
 
-        if (task.getDueTime() != null) {
+        if( task.getDueTime() != null && !task.getDueTime().equals(DUE_TIME_DEFAULT) ) {
             values.put(TASK_DUE_TIME, task.getDueTime());
+        } else if( task.getDueTime() != null && task.getDueTime().equals(DUE_TIME_DEFAULT) ) {
+            values.putNull(TASK_DUE_TIME);
         } else {
             values.putNull(TASK_DUE_TIME);
         }

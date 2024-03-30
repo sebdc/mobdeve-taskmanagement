@@ -43,28 +43,31 @@ import java.util.Locale;
 
 public class AddTaskActivity extends AppCompatActivity {
 
-    // - Task Header
+    // - Task Details
     private EditText etTaskTitle;
     private EditText etTaskDescription;
-    private ImageButton btnBack;
-
-    // - Task Details
     private TextView tvAssignCategory;
-    private ImageButton btnClearCategory;
-
     private TextView tvAssignPriority;
-    private ImageButton btnClearPriority;
-
-    // - Task Due Date
     private Button btnAssignDueDate;
     private Button btnAssignDueTime;
+
+    // - Clear Buttons
+    private ImageButton btnBack;
+    private ImageButton btnClearCategory;
+    private ImageButton btnClearPriority;
     private ImageButton btnClearDueDate;
+
+    // - Default values
+    private static final String CATEGORY_DEFAULT = "Assign category";
+    private static final String PRIORITY_DEFAULT = "Assign priority";
+    private static final String DUE_DATE_DEFAULT = "Due date";
+    private static final String DUE_TIME_DEFAULT = "Add time";
 
     // - Create Task
     private Button btnCreateTask;
 
     /*|*******************************************************
-                    Constructor Methods
+                        Constructor Methods
     *********************************************************/
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -113,7 +116,7 @@ public class AddTaskActivity extends AppCompatActivity {
         btnClearCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvAssignCategory.setText("Assign category");
+                tvAssignCategory.setText(CATEGORY_DEFAULT);
                 btnClearCategory.setVisibility(View.GONE);
             }
         });
@@ -128,7 +131,7 @@ public class AddTaskActivity extends AppCompatActivity {
         btnClearPriority.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvAssignPriority.setText("Assign priority");
+                tvAssignPriority.setText(PRIORITY_DEFAULT);
                 btnClearPriority.setVisibility(View.GONE);
             }
         });
@@ -150,8 +153,8 @@ public class AddTaskActivity extends AppCompatActivity {
         btnClearDueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAssignDueDate.setText("Due date");
-                btnAssignDueTime.setText("Add time");
+                btnAssignDueDate.setText(DUE_DATE_DEFAULT);
+                btnAssignDueTime.setText(DUE_TIME_DEFAULT);
                 btnClearDueDate.setVisibility(View.GONE);
             }
         });
@@ -197,11 +200,11 @@ public class AddTaskActivity extends AppCompatActivity {
             task.setPriorityLevel(priorityLevel);
         }
 
-        if( !dueDate.isEmpty() && !dueDate.equals("Due date") ) {
+        if( !dueDate.isEmpty() && !dueDate.equals(DUE_DATE_DEFAULT) ) {
             task.setDueDate( dueDate );
         }
 
-        if( !dueTime.isEmpty() && !dueTime.equals("Add time") ) {
+        if( !dueTime.isEmpty() && !dueTime.equals(DUE_TIME_DEFAULT) ) {
             task.setDueTime(dueTime);
         }
 
@@ -223,7 +226,7 @@ public class AddTaskActivity extends AppCompatActivity {
             public void onCategorySelected( Category category ) {
                 String categoryName = category.getName();
                 if( categoryName.equals("None") ) {
-                    tvAssignCategory.setText( "Assign category" );
+                    tvAssignCategory.setText( CATEGORY_DEFAULT );
                     btnClearCategory.setVisibility(View.GONE);
                 } else {
                     tvAssignCategory.setText( category.getName() );
@@ -248,7 +251,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 String formattedDate = dateFormat.format(selectedDate.getTime());
 
                 // - Set the new text
-                if( btnAssignDueDate.equals("Due date") ) {
+                if( btnAssignDueDate.equals(DUE_DATE_DEFAULT) ) {
                     btnClearDueDate.setVisibility(View.GONE);
                 } else {
                     btnAssignDueDate.setText(formattedDate);
@@ -273,7 +276,7 @@ public class AddTaskActivity extends AppCompatActivity {
                         String formattedTime = String.format("%02d:%02d %s", hour, minute, amPm);
 
                         // - Set the new text
-                        if( btnAssignDueTime.equals("Add time") ) {
+                        if( btnAssignDueTime.equals(DUE_TIME_DEFAULT) ) {
                             btnClearDueDate.setVisibility(View.GONE);
                         } else {
                             btnAssignDueTime.setText(formattedTime);
@@ -294,7 +297,7 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public void onPrioritySelected( String priority ) {
                 if( priority.equals("None") ) {
-                    tvAssignPriority.setText( "Assign priority" );
+                    tvAssignPriority.setText(PRIORITY_DEFAULT);
                     btnClearPriority.setVisibility(View.GONE);
                 } else {
                     tvAssignPriority.setText(priority);

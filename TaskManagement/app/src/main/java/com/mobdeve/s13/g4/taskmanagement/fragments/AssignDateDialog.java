@@ -93,7 +93,7 @@ public class AssignDateDialog extends DialogFragment {
         btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
+                if( listener != null ) {
                     listener.onDateSelected(calendarAdapter.getSelectedDate());
                 }
                 dismiss();
