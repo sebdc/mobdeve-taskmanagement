@@ -1,6 +1,5 @@
 package com.mobdeve.s13.g4.taskmanagement.utility;
 
-import android.annotation.SuppressLint;
 import android.widget.ImageButton;
 import android.widget.TextView;
 

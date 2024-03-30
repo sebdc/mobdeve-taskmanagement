@@ -1,9 +1,6 @@
 package com.mobdeve.s13.g4.taskmanagement.database;
 
-import android.content.Context;
-
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseCreator {
     
@@ -22,11 +19,12 @@ public class DatabaseCreator {
     private static final String CATEGORY_DATE_CREATED = "dateCreated";
     private static final String CATEGORY_ONGOING_TASK_COUNT = "ongoingTaskCount";
     private static final String CATEGORY_COMPLETED_TASK_COUNT = "completedTaskCount";
+    private static final String CATEGORY_MAIN_COLOR = "mainColor";
+    private static final String CATEGORY_SUB_COLOR = "subColor";
 
     // - Task Table
     private static final String TASK_TABLE = "tasks";
     private static final String TASK_ID = "id";
-    private static final String TASK_USER_ID = "userId";
     private static final String TASK_CATEGORY_ID = "categoryId";
     private static final String TASK_TITLE = "title";
     private static final String TASK_DESCRIPTION = "description";
@@ -77,7 +75,9 @@ public class DatabaseCreator {
                 + CATEGORY_NAME + " TEXT NOT NULL,"
                 + CATEGORY_DATE_CREATED + " TEXT NOT NULL,"
                 + CATEGORY_ONGOING_TASK_COUNT + " INTEGER NOT NULL,"
-                + CATEGORY_COMPLETED_TASK_COUNT + " INTEGER NOT NULL"
+                + CATEGORY_COMPLETED_TASK_COUNT + " INTEGER NOT NULL,"
+                + CATEGORY_MAIN_COLOR + " TEXT,"
+                + CATEGORY_SUB_COLOR + " TEXT"
                 + ")";
         database.execSQL(CREATE_CATEGORY_TABLE);
     }
@@ -86,8 +86,7 @@ public class DatabaseCreator {
         String CREATE_TASK_TABLE =
             "CREATE TABLE " + TASK_TABLE + "("
                 + TASK_ID + " TEXT PRIMARY KEY,"
-                + TASK_USER_ID + " TEXT NOT NULL," 
-                + TASK_CATEGORY_ID + " TEXT NOT NULL,"
+                + TASK_CATEGORY_ID + " TEXT,"
                 + TASK_TITLE + " TEXT NOT NULL,"
                 + TASK_DESCRIPTION + " TEXT,"
                 + TASK_DATE_CREATED + " TEXT NOT NULL,"
@@ -95,7 +94,6 @@ public class DatabaseCreator {
                 + TASK_DUE_TIME + " TEXT,"
                 + TASK_IS_COMPLETED + " INTEGER NOT NULL,"
                 + TASK_PRIORITY_LEVEL + " TEXT,"
-                + "FOREIGN KEY(" + TASK_USER_ID + ") REFERENCES " + USER_TABLE + "(" + USER_ID + ")"
                 + "FOREIGN KEY(" + TASK_CATEGORY_ID + ") REFERENCES " + CATEGORY_TABLE + "(" + CATEGORY_ID + ")"
                 + ")";
         database.execSQL(CREATE_TASK_TABLE);

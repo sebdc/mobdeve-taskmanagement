@@ -1,9 +1,5 @@
 package com.mobdeve.s13.g4.taskmanagement.database;
 
-import com.mobdeve.s13.g4.taskmanagement.R;
-import com.mobdeve.s13.g4.taskmanagement.activities.*;
-import com.mobdeve.s13.g4.taskmanagement.models.*;
-import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;

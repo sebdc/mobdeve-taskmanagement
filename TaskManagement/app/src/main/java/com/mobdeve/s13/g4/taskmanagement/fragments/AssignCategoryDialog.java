@@ -3,15 +3,13 @@ package com.mobdeve.s13.g4.taskmanagement.fragments;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.datepicker.MaterialDatePicker;
+
 import com.mobdeve.s13.g4.taskmanagement.R;
 import com.mobdeve.s13.g4.taskmanagement.adapters.*;
+import com.mobdeve.s13.g4.taskmanagement.database.DatabaseHandler;
 import com.mobdeve.s13.g4.taskmanagement.models.*;
-import com.mobdeve.s13.g4.taskmanagement.database.*;
-import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,69 +21,59 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Date;
+
 
 public class AssignCategoryDialog extends BottomSheetDialogFragment {
 
-    // - XML Attributes
-    private RecyclerView rvCategoryList;
+    // -
     private AssignCategoryAdapter assignCategoryAdapter;
     private List<Category> categoryList;
     private OnCategorySelectedListener listener;
+
+    // - XML Attributes
+    private View view;
+    private RecyclerView rvCategoryList;
+    private Button btnCreateCategory;
+    private Button btnDone;
 
     /*|*******************************************************
                         Constructor Methods
     *********************************************************/
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-        View view = inflater.inflate(R.layout.dialog_assign_category, container, false);
-
-        rvCategoryList = view.findViewById(R.id.rvCategoryList);
-        Button btnCreateCategory = view.findViewById(R.id.btnCreateCategory);
-        Button btnDone = view.findViewById(R.id.btnDone);
-
+        view = inflater.inflate(R.layout.dialog_assign_category, container, false);
         categoryList = new ArrayList<>();
-        assignCategoryAdapter = new AssignCategoryAdapter( categoryList, new AssignCategoryAdapter.OnCategoryClickListener() {
+
+        // - Database setup
+        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+        categoryList = dbHandler.getAllCategories();
+
+        // - Sort categories by dateCreated
+        Collections.sort( categoryList, new Comparator<Category>() {
             @Override
-            public void onCategoryClick(Category category) {
-                if( listener != null ) {
-                    listener.onCategorySelected(category);
-                    dismiss();
-                }
+            public int compare(Category c1, Category c2) {
+                return c1.getDateCreated().compareTo(c2.getDateCreated());
             }
         });
 
+        // - Dialog view and functionality setup
+        findAllViews();
+        setupAdapterFunctionality();
+        setupButtonsFunctionality();
+
+        // - Recycler view setup
         rvCategoryList.setLayoutManager( new LinearLayoutManager(getContext()) );
         rvCategoryList.setAdapter(assignCategoryAdapter);
 
-        btnCreateCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCreateCategoryDialog();
-            }
-        });
-
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
         return view;
     }
-
 
     public interface OnCategorySelectedListener {
         void onCategorySelected( Category category );
@@ -99,16 +87,41 @@ public class AssignCategoryDialog extends BottomSheetDialogFragment {
         this.listener = listener;
     }
 
-    private void openCreateCategoryDialog() {
-        CreateCategoryDialog dialog = CreateCategoryDialog.newInstance();
-        dialog.setOnCategoryCreatedListener(new CreateCategoryDialog.OnCategoryCreatedListener() {
+    /*|*******************************************************
+                       Initialize Methods
+    *********************************************************/
+    private void findAllViews() {
+        rvCategoryList = view.findViewById(R.id.rvCategoryList);
+        btnCreateCategory = view.findViewById(R.id.btnCreateCategory);
+        btnDone = view.findViewById(R.id.btnDone);
+    }
+
+    private void setupButtonsFunctionality() {
+        btnCreateCategory.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onCategoryCreated(Category category) {
-                categoryList.add(category);
-                assignCategoryAdapter.notifyDataSetChanged();
+            public void onClick(View v) {
+                openCreateCategoryDialog();
             }
         });
-        dialog.show(getParentFragmentManager(), "CreateCategoryDialog");
+
+        btnDone.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+    }
+
+    private void setupAdapterFunctionality() {
+        assignCategoryAdapter = new AssignCategoryAdapter( categoryList, new AssignCategoryAdapter.OnCategoryClickListener() {
+            @Override
+            public void onCategoryClick( Category category ) {
+                if( listener != null ) {
+                    listener.onCategorySelected(category);
+                    dismiss();
+                }
+            }
+        });
     }
 
     /*|*******************************************************
@@ -140,6 +153,18 @@ public class AssignCategoryDialog extends BottomSheetDialogFragment {
         });
 
         return dialog;
+    }
+
+    private void openCreateCategoryDialog() {
+        CreateCategoryDialog dialog = CreateCategoryDialog.newInstance();
+        dialog.setOnCategoryCreatedListener(new CreateCategoryDialog.OnCategoryCreatedListener() {
+            @Override
+            public void onCategoryCreated(Category category) {
+                categoryList.add(category);
+                assignCategoryAdapter.notifyDataSetChanged();
+            }
+        });
+        dialog.show(getParentFragmentManager(), "CreateCategoryDialog");
     }
 
     private int getScreenHeight() {

@@ -1,8 +1,6 @@
 package com.mobdeve.s13.g4.taskmanagement.viewholders;
 
-import com.mobdeve.s13.g4.taskmanagement.adapters.*;
 import com.mobdeve.s13.g4.taskmanagement.models.*;
-import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
 import android.view.View;
 import android.widget.TextView;

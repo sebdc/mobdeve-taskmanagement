@@ -1,39 +1,24 @@
 package com.mobdeve.s13.g4.taskmanagement.fragments;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.mobdeve.s13.g4.taskmanagement.R;
 import com.mobdeve.s13.g4.taskmanagement.adapters.*;
-import com.mobdeve.s13.g4.taskmanagement.models.*;
-import com.mobdeve.s13.g4.taskmanagement.database.*;
-import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.util.DisplayMetrics;
+
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
+
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;

@@ -39,7 +39,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
         Task task = taskList.get(position);
 
         // - Check if the new task's due date is different from the current date
-        String taskDueDate = formatDate(task.getDueDate());
+        String taskDueDate = task.getDueDate();
 
         if( !taskDueDate.equals(currentDate) ) {
             holder.getTaskDueDate().setVisibility(View.VISIBLE);
@@ -48,11 +48,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
         }
 
         if( task.getTitle() != null ) {
-            holder.getTaskTitle().setText( task.getTitle() );
+            holder.getTaskTitle().setText(task.getTitle());
         }
 
         if( task.getDueDate() != null ) {
-            holder.getTaskDueDate().setText(formatDate(task.getDueDate()));
+            holder.getTaskDueDate().setText(task.getDueDate());
         }
 
         if( task.getCategory() != null && task.getCategory().getName() != null ) {

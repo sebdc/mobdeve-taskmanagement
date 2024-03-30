@@ -85,8 +85,8 @@ public class FirebaseHandler {
         taskData.put("title", task.getTitle());
         taskData.put("description", task.getDescription());
         taskData.put("categoryId", task.getCategory().getId());
-        taskData.put("dateCreated", task.getDateCreated().getTime()); // Store date as long
-        taskData.put("dueDate", task.getDueDate() != null ? task.getDueDate().getTime() : null); // Store date as long or null
+        taskData.put("dateCreated", task.getDateCreated()); // Store date as long
+        taskData.put("dueDate", task.getDueDate() != null ? task.getDueDate() : null); // Store date as long or null
         taskData.put("isCompleted", task.isCompleted());
         taskData.put("priorityLevel", task.getPriorityLevel());
 
@@ -109,7 +109,7 @@ public class FirebaseHandler {
         updatedTaskData.put("title", updatedTask.getTitle());
         updatedTaskData.put("description", updatedTask.getDescription());
         updatedTaskData.put("categoryId", updatedTask.getCategory().getId());
-        updatedTaskData.put("dueDate", updatedTask.getDueDate() != null ? updatedTask.getDueDate().getTime() : null);
+        updatedTaskData.put("dueDate", updatedTask.getDueDate() != null ? updatedTask.getDueDate() : null);
         updatedTaskData.put("isCompleted", updatedTask.isCompleted());
         updatedTaskData.put("priorityLevel", updatedTask.getPriorityLevel());
 

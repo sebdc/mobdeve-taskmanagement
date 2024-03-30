@@ -1,14 +1,18 @@
 package com.mobdeve.s13.g4.taskmanagement.fragments;
 
 import com.mobdeve.s13.g4.taskmanagement.R;
+import com.mobdeve.s13.g4.taskmanagement.database.DatabaseHandler;
 import com.mobdeve.s13.g4.taskmanagement.models.*;
 import com.mobdeve.s13.g4.taskmanagement.activities.*;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -30,6 +35,11 @@ public class TaskListFragment extends Fragment {
     private List<Task> taskList;
     private ImageButton btnAddTask;
 
+    private ActivityResultLauncher<Intent> addTaskLauncher;
+
+    /*|*******************************************************
+                         Constructor Methods
+    *********************************************************/
     public TaskListFragment() {}
 
     @Override
@@ -39,6 +49,7 @@ public class TaskListFragment extends Fragment {
         btnAddTask = view.findViewById(R.id.btnAddTask);
         setupTaskListRecyclerView();
         setupAddTaskButton();
+        setupTaskLauncher();
         return view;
     }
 
@@ -46,13 +57,8 @@ public class TaskListFragment extends Fragment {
         rvTaskList.setLayoutManager( new LinearLayoutManager(getContext()) );
 
         // - Create temporary task data
-        taskList = new ArrayList<>();
-
-        taskList.add( new Task("Task 1", "Description 1", new Date()) );
-        taskList.add( new Task("Task 2", "Description 2", new Date()) );
-        taskList.add( new Task("Task 3", "Description 3", new Date()) );
-        taskList.add( new Task("Task 4", "Description 4", new Date()) );
-        taskList.add( new Task("Task 5", "Description 5", new Date()) );
+        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+        taskList = dbHandler.getAllTasks();
 
         // - Create and set the task adapter
         taskAdapter = new TaskAdapter(taskList);
@@ -60,16 +66,35 @@ public class TaskListFragment extends Fragment {
     }
 
     private void setupAddTaskButton() {
-        btnAddTask.setOnClickListener( new View.OnClickListener() {
+        btnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick( View v ) {
-                Intent intent = new Intent( getActivity(), AddTaskActivity.class );
-                startActivity(intent);
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+                addTaskLauncher.launch(intent);
             }
         });
     }
 
-    // Task Adapter
+    private void setupTaskLauncher() {
+        addTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if( result.getResultCode() == Activity.RESULT_OK ) {
+                        refreshTaskList();
+                    }
+                });
+    }
+
+    public void refreshTaskList() {
+        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+        taskList.clear();
+        taskList.addAll(dbHandler.getAllTasks());
+        taskAdapter.notifyDataSetChanged();
+    }
+
+
+    /*|*******************************************************
+                           Task Adapter
+    *********************************************************/
     private class TaskAdapter extends RecyclerView.Adapter<TaskListViewHolder> {
         private List<Task> tasks;
 
@@ -96,6 +121,10 @@ public class TaskListFragment extends Fragment {
         }
     }
 
+
+    /*|*******************************************************
+                      Task List View Holder
+    *********************************************************/
     private class TaskListViewHolder extends RecyclerView.ViewHolder {
         private ImageView flagImageView;
         private TextView titleTextView;
@@ -139,4 +168,5 @@ public class TaskListFragment extends Fragment {
             flagImageView.setVisibility(View.GONE);
         }
     }
+
 }

@@ -1,36 +1,20 @@
 package com.mobdeve.s13.g4.taskmanagement.adapters;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
+
 import com.mobdeve.s13.g4.taskmanagement.R;
-import com.mobdeve.s13.g4.taskmanagement.adapters.*;
-import com.mobdeve.s13.g4.taskmanagement.models.*;
-import com.mobdeve.s13.g4.taskmanagement.database.*;
-import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.os.Bundle;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Date;
 import java.util.Locale;
 
 public class AssignDateAdapter extends BaseAdapter {
