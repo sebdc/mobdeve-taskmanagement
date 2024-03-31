@@ -68,14 +68,6 @@ public class BubbleDateAdapter extends RecyclerView.Adapter<BubbleDateViewHolder
 
         holder.itemView.setSelected(isSelected);
 
-        String test = String.format("onBindViewHolder - Date Selected: %1$tD", selectedDate);
-        String currentDate = String.format("onBindViewHolder - Current Date: %1$tD", date);
-        String selectedMsg = String.format("onBindViewHolder - isSelected = %b\n", isSelected);
-        Log.d("onBindViewHolder()", test);
-        Log.d("onBindViewHolder()", currentDate);
-        Log.d("onBindViewHolder()", selectedMsg);
-
-
         int dayNumberColor = isSelected ? Color.WHITE : Color.BLACK;
         int weekdayColor = isSelected ? Color.WHITE : Color.GRAY;
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.mobdeve.s13.g4.taskmanagement.models.*;
 
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -300,5 +302,86 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return taskList;
+    }
+
+    public List<Task> getAllTasksByMonth(int year, int month) {
+        List<Task> taskList = new ArrayList<>();
+
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(year, month, 1, 0, 0, 0);
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(year, month, endDate.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+
+        // - Log the start date
+        int startYear = startDate.get(Calendar.YEAR);
+        int startMonth = startDate.get(Calendar.MONTH) + 1; // Months are 0-based, so add 1
+        int startDay = startDate.get(Calendar.DAY_OF_MONTH);
+        Log.d("getAllTasksByMonth()", "Start Date: " + startMonth + "/" + startDay + "/" + startYear);
+
+        // - Log the end date
+        int endYear = endDate.get(Calendar.YEAR);
+        int endMonth = endDate.get(Calendar.MONTH) + 1; // Months are 0-based, so add 1
+        int endDay = endDate.get(Calendar.DAY_OF_MONTH);
+        Log.d("getAllTasksByMonth()", "End Date: " + endMonth + "/" + endDay + "/" + endYear);
+
+        String selectQuery = "SELECT * FROM " + TASK_TABLE +
+                " WHERE " + TASK_DUE_DATE + " BETWEEN ? AND ?" +
+                " ORDER BY " + TASK_DUE_DATE + " ASC";
+
+        Log.d("getAllTasksByMonth()", "Query starting");
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{
+                formatDate(startDate.getTime()),
+                formatDate(endDate.getTime())
+        });
+
+
+        if( cursor.moveToFirst() ) {
+            int taskTitleIndex = cursor.getColumnIndex(TASK_TITLE);
+            int taskDescriptionIndex = cursor.getColumnIndex(TASK_DESCRIPTION);
+            int taskDateCreatedIndex = cursor.getColumnIndex(TASK_DATE_CREATED);
+            int taskIdIndex = cursor.getColumnIndex(TASK_ID);
+            int taskCategoryNameIndex = cursor.getColumnIndex(TASK_CATEGORY_NAME);
+            int taskPriorityLevelIndex = cursor.getColumnIndex(TASK_PRIORITY_LEVEL);
+            int taskDueDateIndex = cursor.getColumnIndex(TASK_DUE_DATE);
+            int taskDueTimeIndex = cursor.getColumnIndex(TASK_DUE_TIME);
+            int taskIsCompletedIndex = cursor.getColumnIndex(TASK_IS_COMPLETED);
+
+            do {
+                String taskId = cursor.getString(taskIdIndex);
+                String taskTitle = cursor.getString(taskTitleIndex);
+                String taskDescription = cursor.getString(taskDescriptionIndex);
+                String taskDateCreated = cursor.getString(taskDateCreatedIndex);
+                String taskDueDate = cursor.getString(taskDueDateIndex);
+                String taskDueTime = cursor.getString(taskDueTimeIndex);
+                String taskCategoryName = cursor.getString(taskCategoryNameIndex);
+                String taskPriorityLevel = cursor.getString(taskPriorityLevelIndex);
+                boolean taskIsCompleted = cursor.getInt(taskIsCompletedIndex) == 1;
+
+                Task task = new Task(taskTitle, taskId);
+                task.setDescription(taskDescription);
+                task.setCategory(getCategoryByName(taskCategoryName));
+                task.setPriorityLevel(taskPriorityLevel);
+                task.setDateCreated(taskDateCreated);
+                task.setDueDate(taskDueDate);
+                task.setDueTime(taskDueTime);
+                task.setCompleted(taskIsCompleted);
+                taskList.add(task);
+                Log.d("getAllTasksByMonth()", "Task " + task.getTitle() + " has been added" );
+            } while( cursor.moveToNext() );
+        }
+
+        Log.d("getAllTasksByMonth()", "Query finished" );
+
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    private String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+        return dateFormat.format(date);
     }
 }
