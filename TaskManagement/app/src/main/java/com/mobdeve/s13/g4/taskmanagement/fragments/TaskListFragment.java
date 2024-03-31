@@ -160,20 +160,31 @@ public class TaskListFragment extends Fragment {
         public void bind( Task task ) {
             titleTextView.setText(task.getTitle());
 
-            if( task.getCategory() != null ) {
+            if (task.getCategory() != null) {
+                Category category = task.getCategory();
+
                 tvCategoryTag.setText(task.getCategory().getName());
                 tvCategoryTag.setVisibility(View.VISIBLE);
 
-                int categoryColor = Color.parseColor("#D8981E");
-                tvCategoryTag.setTextColor(categoryColor);
+                String categoryColor = category.getMainColor();
+                if (categoryColor != null && !categoryColor.isEmpty()) {
+                    try {
+                        int color = Color.parseColor(categoryColor);
+                        tvCategoryTag.setTextColor(color);
 
-                // - 10% opacity
-                int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(categoryColor, (int) (255 * 0.1));
-                tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
-
+                        // - 10% opacity
+                        int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(color, (int) (255 * 0.1));
+                        tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
+                    } catch (IllegalArgumentException e) {
+                        // Handle invalid color format
+                        // You can set a default color or take appropriate action
+                        tvCategoryTag.setTextColor(Color.BLACK);
+                        tvCategoryTag.getBackground().setColorFilter(null);
+                    }
+                }
             } else {
-                tvCategoryTag.setVisibility(View.GONE);
-            }
+                    tvCategoryTag.setVisibility(View.GONE);
+                }
 
             if( task.getDueDate() != null ) {
                 deadlineTextView.setText("Deadline: " + task.getDueDate());

@@ -144,7 +144,7 @@ public class AssignCategoryDialog extends BottomSheetDialogFragment {
 
                     // - Set the height of the bottom sheet to half of the screen height
                     ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
-                    layoutParams.height = getScreenHeight() / 3;
+                    layoutParams.height = getScreenHeight() / 2;
                     bottomSheet.setLayoutParams(layoutParams);
                 }
             }

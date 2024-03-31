@@ -7,6 +7,7 @@ import com.mobdeve.s13.g4.taskmanagement.models.*;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.view.View;
 
 import android.widget.TextView;
