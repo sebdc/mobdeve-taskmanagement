@@ -20,7 +20,7 @@ import java.util.List;
 
 public class AssignPriorityDialog extends BottomSheetDialogFragment {
 
-    private RecyclerView rvPriority;
+    private RecyclerView rvPriorityList;
     private PriorityAdapter priorityAdapter;
     private List<String> priorityList;
     private OnPrioritySelectedListener listener;
@@ -37,7 +37,7 @@ public class AssignPriorityDialog extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_assign_priority, container, false);
 
-        rvPriority = view.findViewById(R.id.rvPriority);
+        rvPriorityList = view.findViewById(R.id.rvPriorityList);
         Button btnDone = view.findViewById(R.id.btnDone);
 
         priorityList = new ArrayList<>();
@@ -54,8 +54,8 @@ public class AssignPriorityDialog extends BottomSheetDialogFragment {
                 }
             }
         });
-        rvPriority.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvPriority.setAdapter(priorityAdapter);
+        rvPriorityList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvPriorityList.setAdapter(priorityAdapter);
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override

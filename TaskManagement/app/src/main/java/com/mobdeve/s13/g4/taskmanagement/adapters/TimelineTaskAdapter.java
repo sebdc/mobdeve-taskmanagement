@@ -13,9 +13,15 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +73,9 @@ public class TimelineTaskAdapter extends RecyclerView.Adapter<TimelineTaskAdapte
         return taskList.size();
     }
 
+    /*|*******************************************************
+                        Task View Holder
+    *********************************************************/
     public class TaskViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivFlagIcon;
         private TextView titleTextView;
@@ -74,13 +83,63 @@ public class TimelineTaskAdapter extends RecyclerView.Adapter<TimelineTaskAdapte
 
         public TaskViewHolder( @NonNull View itemView ) {
             super(itemView);
+            findAllViews();
+        }
+
+        private void findAllViews() {
             ivFlagIcon = itemView.findViewById(R.id.ivFlagIcon);
             titleTextView = itemView.findViewById(R.id.titleTextView);
             tvCategoryTag = itemView.findViewById(R.id.tvCategoryTag);
         }
 
+
         public void bind( Task task ) {
             titleTextView.setText(task.getTitle());
+
+            if( task.getCategory() != null ) {
+                tvCategoryTag.setText(task.getCategory().getName());
+                tvCategoryTag.setVisibility(View.VISIBLE);
+
+                int categoryColor = Color.parseColor("#D8981E");
+                tvCategoryTag.setTextColor(categoryColor);
+
+                // - 10% opacity
+                int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(categoryColor, (int) (255 * 0.1));
+                tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
+            } else {
+                tvCategoryTag.setVisibility(View.GONE);
+            }
+
+
+            if( task.getPriorityLevel() != null ) {
+                String priorityLevel = task.getPriorityLevel();
+                handleFlagIconColor(priorityLevel);
+            } else {
+                ivFlagIcon.setVisibility(View.GONE);
+            }
+        }
+
+        private void handleFlagIconColor( String priorityLevel ) {
+            switch( priorityLevel ) {
+                case "High": {
+                    ivFlagIcon.setVisibility(View.VISIBLE);
+                    ivFlagIcon.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.high), PorterDuff.Mode.SRC_IN);
+                }
+                break;
+                case "Medium": {
+                    ivFlagIcon.setVisibility(View.VISIBLE);
+                    ivFlagIcon.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.medium), PorterDuff.Mode.SRC_IN);
+                }
+                break;
+                case "Low": {
+                    ivFlagIcon.setVisibility(View.VISIBLE);
+                    ivFlagIcon.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.low), PorterDuff.Mode.SRC_IN);
+                }
+                break;
+                default: {
+                    ivFlagIcon.setVisibility(View.GONE);
+                }
+            }
         }
     }
 }

@@ -1,49 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/design_bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create Category"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+    android:background="@drawable/rounded_corner_dialog"
+    android:backgroundTint="@color/white"
+    android:paddingTop="24dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/tvHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Category"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:id="@+id/ivSelectedColor"
+            android:layout_width="24dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/circle_button"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintStart_toEndOf="@+id/tvHeaderTitle"
+            app:tint="@color/color_0" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
         <EditText
             android:id="@+id/etCategoryName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Category name" />
+            android:hint="Category name"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnCreateCategory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btnCreateCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/send_fill"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginStart="16dp" />
+            android:src="@drawable/send_fill"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <GridLayout
         android:id="@+id/colorSelectionLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:rowCount="3"
-        android:layout_marginTop="16dp">
+        android:columnCount="7"
+        android:rowCount="1"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:gravity="center">
 
-        <!-- Add color selection items here -->
+        <ImageButton
+            android:id="@+id/btnRemoveColor"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/close_line"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+        <ImageView
+            android:id="@+id/ivColor1"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/color_1" />
+
+        <ImageView
+            android:id="@+id/ivColor2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/color_2" />
+
+        <ImageView
+            android:id="@+id/ivColor3"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/color_3" />
+
+        <ImageView
+            android:id="@+id/ivColor4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/color_4" />
+
+        <ImageView
+            android:id="@+id/ivColor5"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/color_5"/>
+
+        <ImageView
+            android:id="@+id/ivColor6"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/circle_button"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/color_6"/>
+
 
     </GridLayout>
 

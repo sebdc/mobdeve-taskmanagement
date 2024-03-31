@@ -4,14 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@drawable/rounded_corner_dialog"
+    android:backgroundTint="@color/white"
+    android:padding="24dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Assign Category"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCategoryList"
@@ -31,15 +34,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Create Category" />
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:text="Create Category"
+            android:backgroundTint="@color/gray"/>
 
         <Button
             android:id="@+id/btnDone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="14sp"
             android:text="Done"
-            android:layout_marginStart="16dp" />
+            android:backgroundTint="@color/blue"/>
 
     </LinearLayout>
 

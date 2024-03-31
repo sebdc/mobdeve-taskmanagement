@@ -32,7 +32,6 @@ import java.util.List;
 
 public class AssignCategoryDialog extends BottomSheetDialogFragment {
 
-    // -
     private AssignCategoryAdapter assignCategoryAdapter;
     private List<Category> categoryList;
     private OnCategorySelectedListener listener;

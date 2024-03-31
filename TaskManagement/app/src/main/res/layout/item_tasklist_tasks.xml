@@ -16,7 +16,7 @@
         android:background="@drawable/rounded_corner_background"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:elevation="4dp"
@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 tools:text="Task Title" />
 
@@ -91,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceBody1"
                 android:textSize="14sp"
+                android:textColor="@color/gray"
                 android:visibility="gone"
                 tools:textColor="@color/gray"
                 tools:text="Keep your description short so you can read it easily"

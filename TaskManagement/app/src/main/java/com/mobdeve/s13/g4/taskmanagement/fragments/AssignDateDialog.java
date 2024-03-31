@@ -38,7 +38,7 @@ public class AssignDateDialog extends DialogFragment {
     private Button btnCancel;
     private Button btnSelect;
 
-    private AssignDateAdapter calendarAdapter;
+    private AssignDateAdapter assignDateAdapter;
     private Calendar currentDate;
 
     private OnDateSelectedListener listener;
@@ -94,14 +94,14 @@ public class AssignDateDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if( listener != null ) {
-                    listener.onDateSelected(calendarAdapter.getSelectedDate());
+                    listener.onDateSelected(assignDateAdapter.getSelectedDate());
                 }
                 dismiss();
             }
         });
 
         String[] weekdays = new String[]{"M", "T", "W", "T", "F", "S", "S"};
-        ArrayAdapter<String> weekdayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, weekdays);
+        ArrayAdapter<String> weekdayAdapter = new ArrayAdapter<>(getActivity(), R.layout.item_calendar_weekday, weekdays);
         gvWeekdays.setAdapter(weekdayAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -111,8 +111,8 @@ public class AssignDateDialog extends DialogFragment {
 
     private void updateCalendar() {
         tvMonthYear.setText(new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentDate.getTime()));
-        calendarAdapter = new AssignDateAdapter(getActivity(), currentDate, tvMonthYear);
-        gvCalendar.setAdapter(calendarAdapter);
+        assignDateAdapter = new AssignDateAdapter(getActivity(), currentDate, tvMonthYear);
+        gvCalendar.setAdapter(assignDateAdapter);
     }
 
     public void setOnDateSelectedListener(OnDateSelectedListener listener) {

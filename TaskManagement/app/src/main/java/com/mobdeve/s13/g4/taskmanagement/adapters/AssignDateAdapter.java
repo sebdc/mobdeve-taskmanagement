@@ -64,7 +64,7 @@ public class AssignDateAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if( convertView == null ) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_calendar_day, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_calendar_numbers_date, parent, false);
         }
 
         TextView tvDay = convertView.findViewById(R.id.tvDay);

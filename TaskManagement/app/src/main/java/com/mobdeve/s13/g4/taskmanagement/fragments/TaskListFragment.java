@@ -148,7 +148,7 @@ public class TaskListFragment extends Fragment {
         private TextView deadlineTextView;
         private TextView descriptionTextView;
 
-        public TaskListViewHolder(@NonNull View itemView) {
+        public TaskListViewHolder( @NonNull View itemView ) {
             super(itemView);
             ivFlagIcon = itemView.findViewById(R.id.ivFlagIcon);
             titleTextView = itemView.findViewById(R.id.titleTextView);
@@ -157,10 +157,10 @@ public class TaskListFragment extends Fragment {
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
         }
 
-        public void bind(Task task) {
+        public void bind( Task task ) {
             titleTextView.setText(task.getTitle());
 
-            if (task.getCategory() != null) {
+            if( task.getCategory() != null ) {
                 tvCategoryTag.setText(task.getCategory().getName());
                 tvCategoryTag.setVisibility(View.VISIBLE);
 
@@ -175,7 +175,7 @@ public class TaskListFragment extends Fragment {
                 tvCategoryTag.setVisibility(View.GONE);
             }
 
-            if (task.getDueDate() != null) {
+            if( task.getDueDate() != null ) {
                 deadlineTextView.setText("Deadline: " + task.getDueDate());
                 deadlineTextView.setVisibility(View.VISIBLE);
             } else {
@@ -197,8 +197,8 @@ public class TaskListFragment extends Fragment {
             }
         }
 
-        private void handleFlagIconColor(String priorityLevel) {
-            switch (priorityLevel) {
+        private void handleFlagIconColor( String priorityLevel ) {
+            switch( priorityLevel ) {
                 case "High": {
                     ivFlagIcon.setVisibility(View.VISIBLE);
                     ivFlagIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.high), PorterDuff.Mode.SRC_IN);

@@ -65,8 +65,9 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:hint="Task Title"
+            android:textColorHint="@color/gray"
             android:textSize="24sp"
-            android:textColor="@color/gray" />
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/etTaskDescription"
@@ -74,8 +75,9 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:hint="Would you like to add more details"
+            android:textColorHint="@color/gray"
             android:textSize="16sp"
-            android:textColor="@color/gray" />
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <LinearLayout
@@ -264,11 +266,12 @@
         android:layout_height="wrap_content"
         android:text="Create Task"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:backgroundTint="#0055FF"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
