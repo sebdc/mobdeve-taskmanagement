@@ -2,6 +2,7 @@ package com.mobdeve.s13.g4.taskmanagement.fragments;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.mobdeve.s13.g4.taskmanagement.R;
+import com.mobdeve.s13.g4.taskmanagement.activities.AddTaskActivity;
 import com.mobdeve.s13.g4.taskmanagement.activities.ViewTaskActivity;
 import com.mobdeve.s13.g4.taskmanagement.adapters.*;
 import com.mobdeve.s13.g4.taskmanagement.models.*;
@@ -42,19 +43,17 @@ public class TimelineFragment extends Fragment implements TimelineTaskAdapter.On
     private Calendar selectedDate;
     private List<Task> taskList;
     private Map<Integer, List<Task>> dayTaskMap;
+    private ActivityResultLauncher<Intent> addTaskLauncher;
     private ActivityResultLauncher<Intent> updateTaskLauncher;
 
-    // - Header
+    // - XML Attributes
     private TextView tvHeaderTitle;
     private ImageButton btnCalendar;
-
-    // - Tasks
     private RecyclerView rvTaskList;
     private TimelineDayAdapter dayAdapter;
-
-    // - Bubble Dates
     private RecyclerView rvBubbleDates;
     private BubbleDateAdapter bubbleDateAdapter;
+    private ImageButton btnAddTask;
 
     /*|*******************************************************
                         Constructor Methods
@@ -88,6 +87,7 @@ public class TimelineFragment extends Fragment implements TimelineTaskAdapter.On
         btnCalendar = view.findViewById(R.id.btnCalendar);
         btnCalendar.setOnClickListener(v -> openCalendar());
 
+        setupAddTaskButton();
         setupTaskLauncher();
 
         // - Inflate the layout for this fragment
@@ -99,6 +99,7 @@ public class TimelineFragment extends Fragment implements TimelineTaskAdapter.On
     *********************************************************/
     private void findAllViews( View view ) {
         tvHeaderTitle = view.findViewById(R.id.tvHeaderTitle);
+        btnAddTask = view.findViewById(R.id.btnAddTask);
     }
 
     private void setupBubbleDateRecyclerView() {
@@ -129,12 +130,31 @@ public class TimelineFragment extends Fragment implements TimelineTaskAdapter.On
     }
 
     private void setupTaskLauncher() {
+        addTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if( result.getResultCode() == Activity.RESULT_OK ) {
+                        dayAdapter.notifyDataSetChanged();
+                        refreshTaskListRecyclerView();
+                    }
+                });
+
         updateTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if( result.getResultCode() == Activity.RESULT_OK ) {
                         dayAdapter.notifyDataSetChanged();
+                        refreshTaskListRecyclerView();
                     }
                 });
+    }
+
+    private void setupAddTaskButton() {
+        btnAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+                addTaskLauncher.launch(intent);
+            }
+        });
     }
 
     private void initializeDayTaskMap() {
@@ -218,13 +238,11 @@ public class TimelineFragment extends Fragment implements TimelineTaskAdapter.On
         refreshTaskListRecyclerView();
     }
 
-
     private void updateBubbleDateRecyclerView( Calendar calendar ) {
         List<Calendar> dates = DateDataHelper.generateDatesForMonth(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
         bubbleDateAdapter.setDates(dates);
         bubbleDateAdapter.setSelectedDate(selectedDate);
     }
-
 
     /*|*******************************************************
                          Task List

@@ -96,21 +96,34 @@ public class TimelineTaskAdapter extends RecyclerView.Adapter<TimelineTaskAdapte
         public void bind( Task task ) {
             titleTextView.setText(task.getTitle());
 
+            // - Show Task Category
             if( task.getCategory() != null ) {
+                Category category = task.getCategory();
+
                 tvCategoryTag.setText(task.getCategory().getName());
                 tvCategoryTag.setVisibility(View.VISIBLE);
 
-                int categoryColor = Color.parseColor("#D8981E");
-                tvCategoryTag.setTextColor(categoryColor);
+                String categoryColor = category.getMainColor();
 
-                // - 10% opacity
-                int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(categoryColor, (int) (255 * 0.1));
-                tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
+                // - Update Task Category color if it exists
+                if( categoryColor != null && !categoryColor.isEmpty() ) {
+                    try {
+                        int color = Color.parseColor(categoryColor);
+                        tvCategoryTag.setTextColor(color);
+
+                        // - 10% opacity
+                        int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(color, (int) (255 * 0.1));
+                        tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
+                    } catch (IllegalArgumentException e) {
+                        tvCategoryTag.setTextColor(Color.BLACK);
+                        tvCategoryTag.getBackground().setColorFilter(null);
+                    }
+                }
             } else {
                 tvCategoryTag.setVisibility(View.GONE);
             }
 
-
+            // - Change Priority Flag Color
             if( task.getPriorityLevel() != null ) {
                 String priorityLevel = task.getPriorityLevel();
                 handleFlagIconColor(priorityLevel);

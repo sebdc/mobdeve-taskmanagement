@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sort_by_due_date"
+        android:title="Sort by due date and time"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/sort_by_create_time_latest_bottom"
+        android:title="Sort by task create time (latest at bottom)"
+        android:orderInCategory="2" />
+    <item
+        android:id="@+id/sort_by_create_time_latest_top"
+        android:title="Sort by task create time (latest at top)"
+        android:orderInCategory="3" />
+    <item
+        android:id="@+id/sort_by_alphabetical_az"
+        android:title="Sort alphabetically A-Z"
+        android:orderInCategory="4" />
+    <item
+        android:id="@+id/sort_by_alphabetical_za"
+        android:title="Sort alphabetically Z-A"
+        android:orderInCategory="5" />
+    <item
+        android:id="@+id/sort_by_category"
+        android:title="Sort by category (alphabetical)"
+        android:orderInCategory="6" />
+</menu>

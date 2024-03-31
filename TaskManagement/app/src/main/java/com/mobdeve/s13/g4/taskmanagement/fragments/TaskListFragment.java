@@ -19,27 +19,40 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.util.List;
 
-
 public class TaskListFragment extends Fragment {
 
+    // - Attributes
+    private ActivityResultLauncher<Intent> addTaskLauncher;
+    private ActivityResultLauncher<Intent> updateTaskLauncher;
+
+    // - XML Attributes
     private RecyclerView rvTaskList;
     private TaskAdapter taskAdapter;
     private List<Task> taskList;
     private ImageButton btnAddTask;
+    private ImageButton btnViewSettings;
 
-    private ActivityResultLauncher<Intent> addTaskLauncher;
-    private ActivityResultLauncher<Intent> updateTaskLauncher;
+    // - Sort Task Options
+    private static final int SORT_BY_DUE_DATE = 1;
+    private static final int SORT_BY_CREATE_TIME_LATEST_BOTTOM = 2;
+    private static final int SORT_BY_CREATE_TIME_LATEST_TOP = 3;
+    private static final int SORT_BY_ALPHABETICAL_AZ = 4;
+    private static final int SORT_BY_ALPHABETICAL_ZA = 5;
+    private static final int SORT_BY_CATEGORY = 6;
 
     /*|*******************************************************
                          Constructor Methods
@@ -49,12 +62,21 @@ public class TaskListFragment extends Fragment {
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
         View view = inflater.inflate(R.layout.fragment_tasklist, container, false);
-        rvTaskList = view.findViewById(R.id.rvTaskList);
-        btnAddTask = view.findViewById(R.id.btnAddTask);
+        findAllViews(view);
         setupTaskListRecyclerView();
         setupAddTaskButton();
         setupTaskLauncher();
+        setupViewSettingsButton();
         return view;
+    }
+
+    /*|*******************************************************
+                        Initialize Methods
+    *********************************************************/
+    private void findAllViews( View view ) {
+        rvTaskList = view.findViewById(R.id.rvTaskList);
+        btnAddTask = view.findViewById(R.id.btnAddTask);
+        btnViewSettings = view.findViewById(R.id.btnViewSettings);
     }
 
     private void setupTaskListRecyclerView() {
@@ -79,6 +101,15 @@ public class TaskListFragment extends Fragment {
         });
     }
 
+    private void setupViewSettingsButton() {
+        btnViewSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortOptionsPopup(v);
+            }
+        });
+    }
+
     private void setupTaskLauncher() {
         addTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -95,12 +126,71 @@ public class TaskListFragment extends Fragment {
                 });
     }
 
+    /*|*******************************************************
+               Display, Update, and Sort Task List
+    *********************************************************/
     public void refreshTaskList() {
         DatabaseHandler dbHandler = new DatabaseHandler(getContext());
         taskList.clear();
         taskList.addAll(dbHandler.getAllTasks());
         taskAdapter.notifyDataSetChanged();
+
+        dbHandler.close();
     }
+
+
+    private void showSortOptionsPopup( View view ) {
+        PopupMenu popup = new PopupMenu(getContext(), view);
+        popup.getMenuInflater().inflate(R.menu.menu_tasklist_sort_options, popup.getMenu());
+
+        // - Setup Database Handler
+        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+
+        popup.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick( MenuItem item ) {
+                switch( item.getOrder() ) {
+                    case SORT_BY_DUE_DATE:
+                        taskList.clear();
+                        taskList.addAll(dbHandler.getAllTasksSortedByDueDate());
+                        taskAdapter.notifyDataSetChanged();
+                        return true;
+                    case SORT_BY_CREATE_TIME_LATEST_BOTTOM:
+                        Log.d("TaskListFragment", "Sorting tasks by due date");
+                        taskList.clear();
+                        taskList.addAll(dbHandler.getAllTasksSortedByCreateTimeLatestBottom());
+                        taskAdapter.notifyDataSetChanged();
+                        return true;
+                    case SORT_BY_CREATE_TIME_LATEST_TOP:
+                        taskList.clear();
+                        taskList.addAll(dbHandler.getAllTasksSortedByCreateTimeLatestTop());
+                        taskAdapter.notifyDataSetChanged();
+                        return true;
+                    case SORT_BY_ALPHABETICAL_AZ:
+                        taskList.clear();
+                        taskList.addAll(dbHandler.getAllTasksSortedAlphabeticallyAZ());
+                        taskAdapter.notifyDataSetChanged();
+                        return true;
+                    case SORT_BY_ALPHABETICAL_ZA:
+                        taskList.clear();
+                        taskList.addAll(dbHandler.getAllTasksSortedAlphabeticallyZA());
+                        taskAdapter.notifyDataSetChanged();
+                        return true;
+                    case SORT_BY_CATEGORY:
+                        taskList.clear();
+                        taskList.addAll(dbHandler.getAllTasksSortedByCategory());
+                        taskAdapter.notifyDataSetChanged();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        popup.show();
+        dbHandler.close();
+    }
+
 
     /*|*******************************************************
                            Task Adapter
@@ -160,14 +250,17 @@ public class TaskListFragment extends Fragment {
         public void bind( Task task ) {
             titleTextView.setText(task.getTitle());
 
-            if (task.getCategory() != null) {
+            // - Show Task Category
+            if( task.getCategory() != null ) {
                 Category category = task.getCategory();
 
                 tvCategoryTag.setText(task.getCategory().getName());
                 tvCategoryTag.setVisibility(View.VISIBLE);
 
                 String categoryColor = category.getMainColor();
-                if (categoryColor != null && !categoryColor.isEmpty()) {
+
+                // - Update Task Category color if it exists
+                if( categoryColor != null && !categoryColor.isEmpty() ) {
                     try {
                         int color = Color.parseColor(categoryColor);
                         tvCategoryTag.setTextColor(color);
@@ -176,15 +269,13 @@ public class TaskListFragment extends Fragment {
                         int backgroundColorWithOpacity = ColorUtils.setAlphaComponent(color, (int) (255 * 0.1));
                         tvCategoryTag.getBackground().setColorFilter(backgroundColorWithOpacity, PorterDuff.Mode.SRC_IN);
                     } catch (IllegalArgumentException e) {
-                        // Handle invalid color format
-                        // You can set a default color or take appropriate action
                         tvCategoryTag.setTextColor(Color.BLACK);
                         tvCategoryTag.getBackground().setColorFilter(null);
                     }
                 }
             } else {
-                    tvCategoryTag.setVisibility(View.GONE);
-                }
+                tvCategoryTag.setVisibility(View.GONE);
+            }
 
             if( task.getDueDate() != null ) {
                 deadlineTextView.setText("Deadline: " + task.getDueDate());
@@ -193,14 +284,15 @@ public class TaskListFragment extends Fragment {
                 deadlineTextView.setVisibility(View.GONE);
             }
 
-            if (task.getDescription() != null) {
+            if( task.getDescription() != null ) {
                 descriptionTextView.setText(task.getDescription());
                 descriptionTextView.setVisibility(View.VISIBLE);
             } else {
                 descriptionTextView.setVisibility(View.GONE);
             }
 
-            if (task.getPriorityLevel() != null) {
+            // - Change Priority Flag Color and Visibility
+            if( task.getPriorityLevel() != null ) {
                 String priorityLevel = task.getPriorityLevel();
                 handleFlagIconColor(priorityLevel);
             } else {

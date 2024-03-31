@@ -258,11 +258,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Task> getAllTasks() {
+    private List<Task> getTasksFromCursor(Cursor cursor) {
         List<Task> taskList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TASK_TABLE;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
 
         if( cursor.moveToFirst() ) {
             int taskTitleIndex = cursor.getColumnIndex(TASK_TITLE);
@@ -295,9 +292,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 task.setDueTime(taskDueTime);
                 task.setCompleted(taskIsCompleted);
                 taskList.add(task);
-
             } while( cursor.moveToNext() );
         }
+
+        return taskList;
+    }
+
+    public List<Task> getAllTasks() {
+        String selectQuery = "SELECT * FROM " + TASK_TABLE;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
 
         cursor.close();
         db.close();
@@ -305,8 +311,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public List<Task> getAllTasksByMonth(int year, int month) {
-        List<Task> taskList = new ArrayList<>();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, 1);
@@ -320,39 +324,89 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, new String[]{monthString + "%"});
 
-        if( cursor.moveToFirst() ) {
-            int taskTitleIndex = cursor.getColumnIndex(TASK_TITLE);
-            int taskDescriptionIndex = cursor.getColumnIndex(TASK_DESCRIPTION);
-            int taskDateCreatedIndex = cursor.getColumnIndex(TASK_DATE_CREATED);
-            int taskIdIndex = cursor.getColumnIndex(TASK_ID);
-            int taskCategoryNameIndex = cursor.getColumnIndex(TASK_CATEGORY_NAME);
-            int taskPriorityLevelIndex = cursor.getColumnIndex(TASK_PRIORITY_LEVEL);
-            int taskDueDateIndex = cursor.getColumnIndex(TASK_DUE_DATE);
-            int taskDueTimeIndex = cursor.getColumnIndex(TASK_DUE_TIME);
-            int taskIsCompletedIndex = cursor.getColumnIndex(TASK_IS_COMPLETED);
+        List<Task> taskList = getTasksFromCursor(cursor);
 
-            do {
-                String taskId = cursor.getString(taskIdIndex);
-                String taskTitle = cursor.getString(taskTitleIndex);
-                String taskDescription = cursor.getString(taskDescriptionIndex);
-                String taskDateCreated = cursor.getString(taskDateCreatedIndex);
-                String taskDueDate = cursor.getString(taskDueDateIndex);
-                String taskDueTime = cursor.getString(taskDueTimeIndex);
-                String taskCategoryName = cursor.getString(taskCategoryNameIndex);
-                String taskPriorityLevel = cursor.getString(taskPriorityLevelIndex);
-                boolean taskIsCompleted = cursor.getInt(taskIsCompletedIndex) == 1;
+        cursor.close();
+        db.close();
+        return taskList;
+    }
 
-                Task task = new Task(taskTitle, taskId);
-                task.setDescription(taskDescription);
-                task.setCategory(getCategoryByName(taskCategoryName));
-                task.setPriorityLevel(taskPriorityLevel);
-                task.setDateCreated(taskDateCreated);
-                task.setDueDate(taskDueDate);
-                task.setDueTime(taskDueTime);
-                task.setCompleted(taskIsCompleted);
-                taskList.add(task);
-            } while( cursor.moveToNext() );
-        }
+    public List<Task> getAllTasksSortedByDueDate() {
+        String selectQuery =
+                "SELECT * FROM " + TASK_TABLE +
+                " ORDER BY " + TASK_DUE_DATE + " DESC, " + TASK_DUE_TIME + " DESC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
+
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    public List<Task> getAllTasksSortedByCreateTimeLatestBottom() {
+        String selectQuery =
+                "SELECT * FROM " + TASK_TABLE +
+                " ORDER BY " + TASK_DATE_CREATED + " DESC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
+
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    public List<Task> getAllTasksSortedByCreateTimeLatestTop() {
+        String selectQuery =
+                "SELECT * FROM " + TASK_TABLE +
+                " ORDER BY " + TASK_DATE_CREATED + " ASC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
+
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    public List<Task> getAllTasksSortedAlphabeticallyAZ() {
+        String selectQuery =
+                "SELECT * FROM " + TASK_TABLE +
+                " ORDER BY " + TASK_TITLE + " ASC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
+
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    public List<Task> getAllTasksSortedAlphabeticallyZA() {
+        String selectQuery = "SELECT * FROM " + TASK_TABLE +
+                " ORDER BY " + TASK_TITLE + " DESC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
+
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    public List<Task> getAllTasksSortedByCategory() {
+        String selectQuery = "SELECT * FROM " + TASK_TABLE +
+                " ORDER BY " + TASK_CATEGORY_NAME + " ASC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        List<Task> taskList = getTasksFromCursor(cursor);
 
         cursor.close();
         db.close();
