@@ -32,10 +32,15 @@ public class TimelineTaskAdapter extends RecyclerView.Adapter<TimelineTaskAdapte
 
     private List<Task> taskList;
     private ActivityResultLauncher<Intent> updateTaskLauncher;
+    private OnTaskClickListener onTaskClickListener;
 
-    public TimelineTaskAdapter( List<Task> taskList, ActivityResultLauncher<Intent> updateTaskLauncher ) {
+    public interface OnTaskClickListener {
+        void onTaskClick(Task task);
+    }
+
+    public TimelineTaskAdapter( List<Task> taskList, OnTaskClickListener onTaskClickListener ) {
         this.taskList = taskList;
-        this.updateTaskLauncher = updateTaskLauncher;
+        this.onTaskClickListener = onTaskClickListener;
     }
 
     @NonNull
@@ -51,9 +56,9 @@ public class TimelineTaskAdapter extends RecyclerView.Adapter<TimelineTaskAdapte
         holder.bind(task);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), ViewTaskActivity.class);
-            intent.putExtra("task", task);
-            updateTaskLauncher.launch(intent);
+            if( onTaskClickListener != null ) {
+                onTaskClickListener.onTaskClick(task);
+            }
         });
     }
 

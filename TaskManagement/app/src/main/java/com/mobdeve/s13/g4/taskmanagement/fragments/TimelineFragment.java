@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 
-public class TimelineFragment extends Fragment {
+public class TimelineFragment extends Fragment implements TimelineTaskAdapter.OnTaskClickListener {
 
     // - Attributes
     private Calendar selectedDate;
@@ -59,6 +59,13 @@ public class TimelineFragment extends Fragment {
     /*|*******************************************************
                         Constructor Methods
     *********************************************************/
+    @Override
+    public void onTaskClick(Task task) {
+        Intent intent = new Intent(getActivity(), ViewTaskActivity.class);
+        intent.putExtra("task", task);
+        updateTaskLauncher.launch(intent);
+    }
+
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
@@ -117,7 +124,7 @@ public class TimelineFragment extends Fragment {
         DatabaseHandler dbHandler = new DatabaseHandler(getContext());
         initializeDayTaskMap();
 
-        dayAdapter = new TimelineDayAdapter(dayList, dayTaskMap, updateTaskLauncher);
+        dayAdapter = new TimelineDayAdapter(dayList, dayTaskMap, this);
         rvTaskList.setAdapter(dayAdapter);
     }
 
@@ -125,9 +132,6 @@ public class TimelineFragment extends Fragment {
         updateTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if( result.getResultCode() == Activity.RESULT_OK ) {
-                        // Handle the result if needed
-                        // For example, refresh the task list
-                        refreshTaskList();
                         dayAdapter.notifyDataSetChanged();
                     }
                 });
@@ -158,18 +162,6 @@ public class TimelineFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-
-        // Log the contents of dayTaskMap
-        Log.d("dayTaskMapContents", "Logging dayTaskMap contents:");
-        for( Map.Entry<Integer, List<Task>> entry : dayTaskMap.entrySet() ) {
-            int dayOfMonth = entry.getKey();
-            List<Task> tasksForDay = entry.getValue();
-            Log.d("dayTaskMapContents", "Day of month: " + dayOfMonth);
-            Log.d("dayTaskMapContents", "Tasks for day " + dayOfMonth + ":");
-            for (Task task : tasksForDay) {
-                Log.d("dayTaskMapContents", "Task: " + task.getTitle());
-            }
-        }
     }
 
     private void scrollToSelectedDate() {
@@ -188,7 +180,6 @@ public class TimelineFragment extends Fragment {
         tvHeaderTitle.setText(monthYear);
     }
 
-
     private void openCalendar() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Select a date");
@@ -198,6 +189,7 @@ public class TimelineFragment extends Fragment {
         picker.addOnPositiveButtonClickListener(selectedTimeInMillis -> {
             selectedDate.setTimeInMillis(selectedTimeInMillis);
             updateSelectedDate(selectedDate);
+            refreshTaskListRecyclerView();
         });
 
         picker.show(getParentFragmentManager(), "DatePicker");
@@ -223,6 +215,7 @@ public class TimelineFragment extends Fragment {
         updateCalendar();
         updateHeaderTitle();
         scrollToSelectedDate();
+        refreshTaskListRecyclerView();
     }
 
 
@@ -236,13 +229,6 @@ public class TimelineFragment extends Fragment {
     /*|*******************************************************
                          Task List
     *********************************************************/
-    public void refreshTaskList() {
-        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
-        taskList.clear();
-        taskList.addAll(dbHandler.getAllTasks());
-        dayAdapter.notifyDataSetChanged();
-    }
-
     private List<Calendar> generateDaysForMonth( Calendar selectedDate ) {
         List<Calendar> dayList = new ArrayList<>();
 
@@ -250,12 +236,49 @@ public class TimelineFragment extends Fragment {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
 
         int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        for (int i = 1; i <= maxDay; i++) {
+        for( int i = 1; i <= maxDay; i++ ) {
             Calendar day = (Calendar) calendar.clone();
             day.set(Calendar.DAY_OF_MONTH, i);
             dayList.add(day);
         }
 
         return dayList;
+    }
+
+    private void refreshTaskListRecyclerView() {
+        // - Clear the existing dayTaskMap
+        dayTaskMap.clear();
+
+        // - Generate the list of days for the selected month
+        List<Calendar> dayList = generateDaysForMonth(selectedDate);
+
+        // - Get all tasks for the selected month
+        int selectedYear = selectedDate.get(Calendar.YEAR);
+        int selectedMonth = selectedDate.get(Calendar.MONTH);
+
+        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+        List<Task> tasksForMonth = dbHandler.getAllTasksByMonth(selectedYear, selectedMonth);
+
+        // - Populate the newDayTaskMap with tasks for each day
+        for( Task task : tasksForMonth ) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+            String dueDateString = task.getDueDate();
+            Calendar taskDueDateCalendar = Calendar.getInstance();
+            try {
+                Date dueDate = dateFormat.parse(dueDateString);
+                taskDueDateCalendar.setTime(dueDate);
+                int dayOfMonth = taskDueDateCalendar.get(Calendar.DAY_OF_MONTH);
+                if( !dayTaskMap.containsKey(dayOfMonth)) {
+                    dayTaskMap.put(dayOfMonth, new ArrayList<>());
+                }
+                dayTaskMap.get(dayOfMonth).add(task);
+            } catch( ParseException e ) {
+                e.printStackTrace();
+            }
+        }
+
+        // - Update the dayTaskMap and set the new adapter
+        dayAdapter = new TimelineDayAdapter(dayList, dayTaskMap, this);
+        rvTaskList.setAdapter(dayAdapter);
     }
 }

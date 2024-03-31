@@ -41,12 +41,12 @@ public class TimelineDayAdapter extends RecyclerView.Adapter<TimelineDayAdapter.
     // - Attributes
     private List<Calendar> dayList;
     Map<Integer, List<Task>> dayTaskMap;
-    private ActivityResultLauncher<Intent> updateTaskLauncher;
+    private TimelineTaskAdapter.OnTaskClickListener onTaskClickListener;
 
-    public TimelineDayAdapter( List<Calendar> dayList, Map<Integer, List<Task>> dayTaskMap, ActivityResultLauncher<Intent> updateTaskLauncher ) {
+    public TimelineDayAdapter( List<Calendar> dayList, Map<Integer, List<Task>> dayTaskMap, TimelineTaskAdapter.OnTaskClickListener onTaskClickListener ) {
         this.dayList = dayList;
         this.dayTaskMap = dayTaskMap;
-        this.updateTaskLauncher = updateTaskLauncher;
+        this.onTaskClickListener = onTaskClickListener;
     }
 
     @NonNull
@@ -109,7 +109,7 @@ public class TimelineDayAdapter extends RecyclerView.Adapter<TimelineDayAdapter.
                 Log.d("tasksForDayCheck()", "tasksForDay has tasks on " + dayOfMonth);
             }
 
-            TimelineTaskAdapter taskAdapter = new TimelineTaskAdapter(tasksForDay, updateTaskLauncher);
+            TimelineTaskAdapter taskAdapter = new TimelineTaskAdapter(tasksForDay, onTaskClickListener);
             rvTasksForDate.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
             rvTasksForDate.setAdapter(taskAdapter);
         }

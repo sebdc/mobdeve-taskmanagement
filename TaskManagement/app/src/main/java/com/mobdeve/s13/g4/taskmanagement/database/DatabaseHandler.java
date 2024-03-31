@@ -307,36 +307,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<Task> getAllTasksByMonth(int year, int month) {
         List<Task> taskList = new ArrayList<>();
 
-        Calendar startDate = Calendar.getInstance();
-        startDate.set(year, month, 1, 0, 0, 0);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, 1);
 
-        Calendar endDate = Calendar.getInstance();
-        endDate.set(year, month, endDate.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
-
-        // - Log the start date
-        int startYear = startDate.get(Calendar.YEAR);
-        int startMonth = startDate.get(Calendar.MONTH) + 1; // Months are 0-based, so add 1
-        int startDay = startDate.get(Calendar.DAY_OF_MONTH);
-        Log.d("getAllTasksByMonth()", "Start Date: " + startMonth + "/" + startDay + "/" + startYear);
-
-        // - Log the end date
-        int endYear = endDate.get(Calendar.YEAR);
-        int endMonth = endDate.get(Calendar.MONTH) + 1; // Months are 0-based, so add 1
-        int endDay = endDate.get(Calendar.DAY_OF_MONTH);
-        Log.d("getAllTasksByMonth()", "End Date: " + endMonth + "/" + endDay + "/" + endYear);
+        String monthString = dateFormat.format(calendar.getTime()).substring(0, 4); // Extract "MMM" from the formatted date
 
         String selectQuery = "SELECT * FROM " + TASK_TABLE +
-                " WHERE " + TASK_DUE_DATE + " BETWEEN ? AND ?" +
+                " WHERE " + TASK_DUE_DATE + " LIKE ? " +
                 " ORDER BY " + TASK_DUE_DATE + " ASC";
 
-        Log.d("getAllTasksByMonth()", "Query starting");
-
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{
-                formatDate(startDate.getTime()),
-                formatDate(endDate.getTime())
-        });
-
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{monthString + "%"});
 
         if( cursor.moveToFirst() ) {
             int taskTitleIndex = cursor.getColumnIndex(TASK_TITLE);
@@ -369,11 +351,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 task.setDueTime(taskDueTime);
                 task.setCompleted(taskIsCompleted);
                 taskList.add(task);
-                Log.d("getAllTasksByMonth()", "Task " + task.getTitle() + " has been added" );
             } while( cursor.moveToNext() );
         }
-
-        Log.d("getAllTasksByMonth()", "Query finished" );
 
         cursor.close();
         db.close();
