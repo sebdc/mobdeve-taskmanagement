@@ -172,6 +172,12 @@ public class TimelineFragment extends Fragment {
         }
     }
 
+    private void scrollToSelectedDate() {
+        int position = dayAdapter.getPositionForDate(selectedDate);
+        if( position != -1 ) {
+            rvTaskList.smoothScrollToPosition(position);
+        }
+    }
 
     /*|*******************************************************
                   Header Title and Calendar Button
@@ -216,6 +222,7 @@ public class TimelineFragment extends Fragment {
         updateBubbleDateRecyclerView(selectedDate);
         updateCalendar();
         updateHeaderTitle();
+        scrollToSelectedDate();
     }
 
 

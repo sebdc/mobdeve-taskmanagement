@@ -78,7 +78,11 @@ public class BubbleDateAdapter extends RecyclerView.Adapter<BubbleDateViewHolder
         int backgroundResId = isSelected ? R.drawable.bg_bubble_date_selected : R.drawable.bg_bubble_date;
         holder.itemView.setBackgroundResource(backgroundResId);
 
-        holder.itemView.setOnClickListener(v -> onDateSelectedListener.onDateSelected(date, dayNumber));
+        holder.itemView.setOnClickListener(v -> {
+            selectedDate = date;
+            notifyDataSetChanged();
+            onDateSelectedListener.onDateSelected(date, dayNumber);
+        });
     }
 
     public void setDates(List<Calendar> newDates) {

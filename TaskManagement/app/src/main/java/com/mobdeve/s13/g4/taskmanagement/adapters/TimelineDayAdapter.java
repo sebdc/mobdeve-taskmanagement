@@ -67,6 +67,19 @@ public class TimelineDayAdapter extends RecyclerView.Adapter<TimelineDayAdapter.
         return dayList.size();
     }
 
+    public int getPositionForDate(Calendar date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String targetDate = dateFormat.format(date.getTime());
+
+        for( int i = 0; i < dayList.size(); i++ ) {
+            String currentDate = dateFormat.format(dayList.get(i).getTime());
+            if( currentDate.equals(targetDate)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     /*|*******************************************************
                         DayViewHolder Class
     *********************************************************/
