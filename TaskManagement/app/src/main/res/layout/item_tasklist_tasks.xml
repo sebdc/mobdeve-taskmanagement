@@ -4,18 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingBottom="8dp"
+    android:outlineProvider="bounds"
+    android:clipToPadding="false"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/rounded_corner_background"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="4dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,7 +82,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/gray"
                 android:visibility="gone"
-                tools:text="Task Deadline: 27 Mar 2024 at 8:00 PM"
+                tools:text="Deadline: 27 Mar 2024 at 8:00 PM"
                 tools:visibility="visible" />
 
             <TextView

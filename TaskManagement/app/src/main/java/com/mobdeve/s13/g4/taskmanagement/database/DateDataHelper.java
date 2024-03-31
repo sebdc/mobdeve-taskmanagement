@@ -6,12 +6,14 @@ import java.util.Calendar;
 import java.util.List;
 
 public class DateDataHelper {
-    public static List<Calendar> generateDates() {
+    public static List<Calendar> generateDatesForMonth(int year, int month) {
         List<Calendar> dates = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2024, Calendar.MARCH, 1);
+        calendar.set(year, month, 1);
 
-        for( int i = 0; i < 31; i++ ) {
+        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        for( int i = 1; i <= daysInMonth; i++ ) {
             Calendar date = (Calendar) calendar.clone();
             dates.add(date);
             calendar.add(Calendar.DATE, 1);

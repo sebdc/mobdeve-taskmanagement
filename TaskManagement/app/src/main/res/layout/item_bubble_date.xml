@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:background="@drawable/bg_bubble_date_selector"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:elevation="1dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="24dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp">
 
     <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="48dp"
-        android:layout_height="96dp"
-        android:background="@drawable/bg_bubble_date"
-        android:gravity="center"
-        android:textColor="@color/bubble_date_text_color"
-        android:textSize="16sp" />
-</FrameLayout>
+        android:id="@+id/tvDayNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/tvWeekday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray" />
+
+</LinearLayout>

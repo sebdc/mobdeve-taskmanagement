@@ -27,6 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,6 +37,9 @@ import java.util.Locale;
 
 public class TimelineFragment extends Fragment {
 
+    private Calendar selectedDate;
+
+    private TextView tvHeaderTitle;
     private RecyclerView rvBubbleDates;
     private RecyclerView rvTaskList;
     private TaskAdapter taskAdapter;
@@ -47,10 +52,17 @@ public class TimelineFragment extends Fragment {
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
+        findAllViews(view);
+        selectedDate = Calendar.getInstance();
+
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
+        String monthYear = monthFormat.format(selectedDate.getTime());
+        tvHeaderTitle.setText(monthYear);
 
         // - Initialize and set up the bubble date RecyclerView
         rvBubbleDates = view.findViewById(R.id.rvBubbleDates);
         setupBubbleDateRecyclerView();
+        updateBubbleDateRecyclerView(selectedDate);
 
         // - Initialize and set up the task list RecyclerView
         rvTaskList = view.findViewById(R.id.rvTaskList);
@@ -61,16 +73,24 @@ public class TimelineFragment extends Fragment {
 
         setupTaskLauncher();
 
-        // Inflate the layout for this fragment
+        // - Inflate the layout for this fragment
         return view;
+    }
+
+
+    private void findAllViews( View view ) {
+        tvHeaderTitle = view.findViewById(R.id.tvHeaderTitle);
     }
 
     private void setupBubbleDateRecyclerView() {
         rvBubbleDates.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        List<Calendar> dates = DateDataHelper.generateDates();
-        bubbleDateAdapter = new BubbleDateAdapter(dates, date -> {
-            // - Handle the selected date here
-            // - Update your UI or perform any other actions
+        List<Calendar> dates = DateDataHelper.generateDatesForMonth(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH));
+        bubbleDateAdapter = new BubbleDateAdapter(dates, (date, dayNumber) -> {
+            Calendar selectedDate = Calendar.getInstance();
+            selectedDate.set(Calendar.YEAR, date.get(Calendar.YEAR));
+            selectedDate.set(Calendar.MONTH, date.get(Calendar.MONTH));
+            selectedDate.set(Calendar.DAY_OF_MONTH, dayNumber);
+            updateSelectedDate(selectedDate);
         });
         rvBubbleDates.setAdapter(bubbleDateAdapter);
     }
@@ -97,13 +117,53 @@ public class TimelineFragment extends Fragment {
     private void openCalendar() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Select a date");
+        builder.setSelection(selectedDate.getTimeInMillis());
+
         MaterialDatePicker<Long> picker = builder.build();
+        picker.addOnPositiveButtonClickListener(selectedTimeInMillis -> {
+            selectedDate.setTimeInMillis(selectedTimeInMillis);
+            updateSelectedDate(selectedDate);
+        });
 
         picker.show(getParentFragmentManager(), "DatePicker");
-        picker.addOnPositiveButtonClickListener(selectedDate -> {
-            // Handle the selected date
-            // You can update your UI or perform any other actions here
+    }
+
+
+    private void updateTaskList() {
+        DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+        taskList.clear();
+        // taskList.addAll(dbHandler.getTasksByDate(selectedDate.getTime()));
+        taskAdapter.notifyDataSetChanged();
+    }
+
+    private void updateSelectedDate(Calendar newSelectedDate) {
+        selectedDate = newSelectedDate;
+        updateBubbleDateRecyclerView(selectedDate);
+        updateCalendar();
+        updateHeaderTitle();
+    }
+
+    private void updateBubbleDateRecyclerView(Calendar calendar) {
+        List<Calendar> dates = DateDataHelper.generateDatesForMonth(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
+        bubbleDateAdapter.setDates(dates);
+        bubbleDateAdapter.setSelectedDate(selectedDate);
+    }
+
+    private void updateCalendar() {
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Select a date");
+        builder.setSelection(selectedDate.getTimeInMillis());
+
+        MaterialDatePicker<Long> picker = builder.build();
+        picker.addOnPositiveButtonClickListener(selectedTimeInMillis -> {
+            selectedDate.setTimeInMillis(selectedTimeInMillis);
         });
+    }
+
+    private void updateHeaderTitle() {
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
+        String monthYear = monthFormat.format(selectedDate.getTime());
+        tvHeaderTitle.setText(monthYear);
     }
 
     private void setupTaskLauncher() {
@@ -176,50 +236,6 @@ public class TimelineFragment extends Fragment {
         public void bind(Task task) {
             taskTitle.setText(task.getTitle());
             taskPriority.setText("None");
-
-            /*
-                        titleTextView.setText(task.getTitle());
-
-            if( task.getCategory() != null ) {
-                categoryTextView.setText(task.getCategory().getName());
-                categoryTextView.setVisibility(View.VISIBLE);
-            } else {
-                categoryTextView.setVisibility(View.GONE);
-            }
-
-            if( task.getDueDate() != null ) {
-                deadlineTextView.setText("Task Deadline: " + task.getDueDate());
-                deadlineTextView.setVisibility(View.VISIBLE);
-            } else {
-                deadlineTextView.setVisibility(View.GONE);
-            }
-
-            if( task.getDescription() != null ) {
-                descriptionTextView.setText(task.getDescription());
-                descriptionTextView.setVisibility(View.VISIBLE);
-            } else {
-                descriptionTextView.setVisibility(View.GONE);
-            }
-
-            flagImageView.setVisibility(View.GONE);
-
-             */
-        }
-
-        public TextView getTaskDueDate() {
-            return taskDueDate;
-        }
-
-        public TextView getTaskTitle() {
-            return taskTitle;
-        }
-
-        public TextView getTaskCategory() {
-            return taskCategory;
-        }
-
-        public TextView getTaskPriority() {
-            return taskPriority;
         }
     }
 }

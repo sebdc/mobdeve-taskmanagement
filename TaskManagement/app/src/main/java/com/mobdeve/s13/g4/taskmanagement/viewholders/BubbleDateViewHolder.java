@@ -8,15 +8,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class BubbleDateViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvDate;
+    private TextView tvDayNumber;
+    private TextView tvWeekday;
 
     public BubbleDateViewHolder(@NonNull View itemView) {
         super(itemView);
-        tvDate = itemView.findViewById(R.id.tvDate);
+        tvDayNumber = itemView.findViewById(R.id.tvDayNumber);
+        tvWeekday = itemView.findViewById(R.id.tvWeekday);
     }
 
-    public TextView getDate() {
-        return tvDate;
+    public TextView getTvDayNumber() {
+        return tvDayNumber;
+    }
+
+    public TextView getTvWeekday() {
+        return tvWeekday;
     }
 
 }

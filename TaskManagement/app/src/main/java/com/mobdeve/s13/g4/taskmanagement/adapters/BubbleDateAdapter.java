@@ -3,9 +3,14 @@ package com.mobdeve.s13.g4.taskmanagement.adapters;
 import com.mobdeve.s13.g4.taskmanagement.R;
 import com.mobdeve.s13.g4.taskmanagement.viewholders.*;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,10 +25,13 @@ public class BubbleDateAdapter extends RecyclerView.Adapter<BubbleDateViewHolder
     private Calendar selectedDate;
     private OnDateSelectedListener onDateSelectedListener;
 
-    public BubbleDateAdapter(List<Calendar> dates, OnDateSelectedListener onDateSelectedListener) {
+    public interface OnDateSelectedListener {
+        void onDateSelected( Calendar date, int dayNumber );
+    }
+
+    public BubbleDateAdapter( List<Calendar> dates, OnDateSelectedListener onDateSelectedListener ) {
         this.dates = dates;
         this.onDateSelectedListener = onDateSelectedListener;
-        this.selectedDate = dates.get(0);
     }
 
     @NonNull
@@ -36,29 +44,66 @@ public class BubbleDateAdapter extends RecyclerView.Adapter<BubbleDateViewHolder
     @Override
     public void onBindViewHolder(@NonNull BubbleDateViewHolder holder, int position) {
         Calendar date = dates.get(position);
-        SimpleDateFormat dayFormat = new SimpleDateFormat("d", Locale.getDefault());
+        TextView tvDayNumber = holder.getTvDayNumber();
+        TextView tvWeekDay = holder.getTvWeekday();
+
+        // - Set day of the month
+        int dayNumber = date.get(Calendar.DAY_OF_MONTH);
+        tvDayNumber.setText( String.valueOf(dayNumber) );
+
+        // - Set day of the week
         SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE", Locale.getDefault());
+        String weekday = weekdayFormat.format(date.getTime());
+        tvWeekDay.setText(weekday);
 
-        String dayText = dayFormat.format(date.getTime());
-        String weekdayText = weekdayFormat.format(date.getTime());
+        boolean isSelected;
+        if( date != null && selectedDate != null ) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String formattedDate = dateFormat.format(date.getTime());
+            String formattedSelectedDate = dateFormat.format(selectedDate.getTime());
+            isSelected = formattedDate.equals(formattedSelectedDate);
+        } else {
+            isSelected = date.equals(selectedDate);
+        }
 
-        holder.getDate().setText(String.format("%s\n%s", dayText, weekdayText));
+        holder.itemView.setSelected(isSelected);
 
-        holder.itemView.setOnClickListener(v -> {
-            selectedDate = date;
-            onDateSelectedListener.onDateSelected(date);
-            notifyDataSetChanged();
-        });
+        String test = String.format("onBindViewHolder - Date Selected: %1$tD", selectedDate);
+        String currentDate = String.format("onBindViewHolder - Current Date: %1$tD", date);
+        String selectedMsg = String.format("onBindViewHolder - isSelected = %b\n", isSelected);
+        Log.d("onBindViewHolder()", test);
+        Log.d("onBindViewHolder()", currentDate);
+        Log.d("onBindViewHolder()", selectedMsg);
 
-        holder.itemView.setSelected(date.equals(selectedDate));
+
+        int dayNumberColor = isSelected ? Color.WHITE : Color.BLACK;
+        int weekdayColor = isSelected ? Color.WHITE : Color.GRAY;
+
+        tvDayNumber.setTextColor(dayNumberColor);
+        tvWeekDay.setTextColor(weekdayColor);
+
+        // - Set the background color using a ColorStateList
+        int backgroundResId = isSelected ? R.drawable.bg_bubble_date_selected : R.drawable.bg_bubble_date;
+        holder.itemView.setBackgroundResource(backgroundResId);
+
+        holder.itemView.setOnClickListener(v -> onDateSelectedListener.onDateSelected(date, dayNumber));
+    }
+
+    public void setDates(List<Calendar> newDates) {
+        dates.clear();
+        dates.addAll(newDates);
+        notifyDataSetChanged();
+    }
+
+    public void setSelectedDate( Calendar selectedDate ) {
+        this.selectedDate = selectedDate;
+        String formattedDate = String.format("setSelectedDate - Date Selected: %1$tD", selectedDate);
+        Log.d("setSelectedDate()", formattedDate);
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
         return dates.size();
-    }
-
-    public interface OnDateSelectedListener {
-        void onDateSelected(Calendar date);
     }
 }
